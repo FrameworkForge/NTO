@@ -1,0 +1,7 @@
+packages:
+  - apps/web
+  - packages/*
+  - services/cloud
+onlyBuiltDependencies:
+  - sharp
+  - supabase

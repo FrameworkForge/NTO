@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+NTO_CONTAINER_BIN="$HOME/.local/share/nto/toolchains/containers/bin"
+export PATH="$NTO_CONTAINER_BIN:$PATH"
+exec limactl stop nto

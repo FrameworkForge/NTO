@@ -1,0 +1,380 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NTO ecosystem contract v1",
+  "type": "object",
+  "properties": {
+    "contractVersion": {
+      "const": 1
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Project"
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Asset"
+      }
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Collection"
+      }
+    },
+    "recipes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EditRecipe"
+      }
+    },
+    "renditions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Rendition"
+      }
+    },
+    "publications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Publication"
+      }
+    }
+  },
+  "required": [
+    "contractVersion",
+    "projects",
+    "assets",
+    "collections",
+    "recipes",
+    "renditions",
+    "publications"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "Project": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "ownerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "ownerId", "title", "createdAt"],
+      "additionalProperties": false
+    },
+    "Asset": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "ownerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "mediaType": {
+          "type": "string"
+        },
+        "originalObjectKey": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!/|file:|[A-Za-z]:).*"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rating": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "flag": {
+          "type": "string",
+          "enum": ["none", "pick", "reject"]
+        },
+        "favourite": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "filename",
+        "mediaType",
+        "originalObjectKey",
+        "width",
+        "height",
+        "rating",
+        "flag",
+        "favourite"
+      ],
+      "additionalProperties": false
+    },
+    "Collection": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "projectId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "assetIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "required": ["id", "projectId", "title", "assetIds"],
+      "additionalProperties": false
+    },
+    "EditRecipe": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "assetId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "exposure": {
+          "type": "number"
+        },
+        "contrast": {
+          "type": "number"
+        },
+        "saturation": {
+          "type": "number"
+        },
+        "temperature": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tint": {
+          "type": "number"
+        },
+        "sharpness": {
+          "type": "number"
+        },
+        "noiseReduction": {
+          "type": "number"
+        },
+        "crop": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "y": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "width": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "height": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": ["x", "y", "width", "height"],
+          "additionalProperties": false
+        },
+        "rotation": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "assetId",
+        "revision",
+        "exposure",
+        "contrast",
+        "saturation",
+        "temperature",
+        "tint",
+        "sharpness",
+        "noiseReduction",
+        "crop",
+        "rotation"
+      ],
+      "additionalProperties": false
+    },
+    "Rendition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "assetId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "recipeRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["thumbnail", "preview", "web", "master", "export"]
+        },
+        "objectKey": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "contentKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "assetId",
+        "recipeRevision",
+        "kind",
+        "objectKey",
+        "width",
+        "height",
+        "contentKey"
+      ],
+      "additionalProperties": false
+    },
+    "Publication": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "ownerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "projectId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "destination": {
+          "type": "string",
+          "enum": ["gallery", "portfolio"]
+        },
+        "title": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "published"]
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public", "unlisted", "password"]
+        },
+        "downloads": {
+          "type": "string",
+          "enum": ["none", "web", "master"]
+        },
+        "assetIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "coverAssetId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "projectId",
+        "destination",
+        "title",
+        "slug",
+        "status",
+        "visibility",
+        "downloads",
+        "assetIds",
+        "coverAssetId",
+        "revision"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

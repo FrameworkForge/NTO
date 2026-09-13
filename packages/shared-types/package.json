@@ -1,0 +1,12 @@
+{
+  "name": "@nto/shared-types",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./fixtures": "./fixtures/ecosystem.json"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}

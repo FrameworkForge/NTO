@@ -1,0 +1,21 @@
+:root {
+  --color-black: #000000;
+  --color-canvas: #0A0A0A;
+  --color-white: #FFFFFF;
+  --color-paper: #F2F2F2;
+  --color-muted: #A3A3A3;
+  --color-line: #383838;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 40px;
+  --spacing-xxl: 64px;
+  --type-caption: 12px;
+  --type-body: 16px;
+  --type-title: 32px;
+  --type-display: 72px;
+  --motion-fast: 120ms;
+  --motion-standard: 240ms;
+  --motion-reveal: 600ms;
+}

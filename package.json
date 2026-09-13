@@ -1,0 +1,34 @@
+{
+  "name": "nto",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @nto/web dev",
+    "build": "pnpm tokens:check && pnpm --filter @nto/web build",
+    "tokens": "node scripts/generate-tokens.mjs",
+    "tokens:check": "node scripts/generate-tokens.mjs --check",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm --filter @nto/web lint",
+    "test": "pnpm tokens:check && pnpm models:check && node --import tsx --test packages/shared-types/tests/*.test.ts services/cloud/tests/contracts.test.ts",
+    "test:web": "pnpm --filter @nto/web test:e2e",
+    "test:cloud": "pnpm --filter @nto/cloud test:integration",
+    "cloud:start": "pnpm --filter @nto/cloud start",
+    "cloud:reset": "pnpm --filter @nto/cloud reset",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
+    "models": "python3 scripts/generate-swift-models.py",
+    "models:check": "python3 scripts/generate-swift-models.py --check",
+    "test:studio": "swift test --package-path apps/studio/NTOFoundation",
+    "build:studio": "xcodebuild -project apps/studio/NTOStudio.xcodeproj -scheme NTOStudio -configuration Debug -derivedDataPath apps/studio/DerivedData CODE_SIGNING_ALLOWED=NO build"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "prettier": "^3.9.6",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

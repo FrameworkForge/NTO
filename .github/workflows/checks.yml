@@ -1,0 +1,47 @@
+name: Foundation checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: pnpm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm --filter @nto/web exec playwright install --with-deps chromium
+      - run: pnpm test:web
+  studio:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - run: xcodebuild -version
+      - run: swift test --package-path apps/studio/NTOFoundation
+      - run: xcodebuild -project apps/studio/NTOStudio.xcodeproj -scheme NTOStudio -configuration Debug -derivedDataPath apps/studio/DerivedData CODE_SIGNING_ALLOWED=NO build
+  cloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.21.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm cloud:start
+      - run: pnpm cloud:reset
+      - run: pnpm test:cloud
+      - if: always()
+        run: pnpm --filter @nto/cloud stop

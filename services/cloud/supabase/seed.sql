@@ -1,0 +1,3 @@
+-- Deterministic data belongs in contract fixtures. Integration tests create isolated
+-- local users and records through real Auth/API calls and remove them afterwards.
+-- No shared passwords, service keys, or production publications are seeded.

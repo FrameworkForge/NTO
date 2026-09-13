@@ -1,0 +1,20 @@
+{
+  "name": "@nto/cloud",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "supabase start",
+    "stop": "supabase stop",
+    "reset": "supabase db reset",
+    "status": "supabase status",
+    "serve": "supabase functions serve health --no-verify-jwt",
+    "typecheck": "tsc -p tsconfig.json",
+    "test:integration": "node --import tsx --test tests/integration.test.ts"
+  },
+  "dependencies": {
+    "@nto/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "supabase": "^2.75.0"
+  }
+}

@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+NTO_CONTAINER_BIN="$HOME/.local/share/nto/toolchains/containers/bin"
+export PATH="$NTO_CONTAINER_BIN:$PATH"
+NTO_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+if [ -f "$HOME/.lima/nto/lima.yaml" ]; then
+  exec limactl start nto --tty=false
+fi
+exec limactl start --name=nto --vm-type=vz --cpus=4 --memory=6 --disk=30 --mount-only "$NTO_ROOT:w" --tty=false template:docker

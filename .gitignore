@@ -1,0 +1,17 @@
+node_modules/
+.next/
+.build/
+DerivedData/
+.env
+.env.*
+!.env.example
+*.xcuserstate
+xcuserdata/
+.DS_Store
+services/cloud/supabase/.temp/
+services/cloud/supabase/.branches/
+playwright-report/
+test-results/
+.vercel/
+*.local.xcconfig
+*.tsbuildinfo
