@@ -2,11 +2,12 @@
 
 Photography. Software. Motion.
 
-A foundation for **NTO Studio** (native macOS), **nto.motion + Gallery** (web), and **NTO Cloud** (Supabase). This is a development scaffold, not the GDD's complete CORE release.
+A foundation for **NTO Studio** (native macOS), **nto.motion + Gallery** (web), and **NTO Cloud** (Supabase). Foundations and local photo import/Library are implemented. This is not the GDD's complete CORE release.
 
 ## Start here
 
 - [Product and milestone boundaries](docs/PRODUCT.md)
+- [Chronological ecosystem build roadmap](docs/BUILD-ROADMAP.md)
 - [Architecture and data flow](docs/ARCHITECTURE.md)
 - [Design system](docs/DESIGN-SYSTEM.md)
 - [Local setup and deployment](docs/SETUP.md)
@@ -37,6 +38,10 @@ Open `apps/studio/NTOStudio.xcodeproj`, select **NTOStudio**, and Run. Requires 
 ./scripts/pnpm build:studio
 ./scripts/pnpm test:studio
 ```
+
+Use **Import…** or **Shift-Cmd-I** to choose files/folders, a destination project, copy/reference storage, and an optional default caption. You can also drop files/folders onto the canvas. The Library supports click, Shift/Command selection, arrow navigation, Cmd-A, and Return to preview. The inspector shows capture metadata and can reconnect a referenced original by content identity. Editing, ratings, export, and publishing controls remain later milestones.
+
+Copies and previews are stored under `~/Library/Application Support/NTO/Studio`; referenced originals stay where you chose them. Back up this library directory, including its database and Originals folder. PreviewCache is derived and rebuildable. See [Phase 02 verification and limits](docs/PHASE-02-VERIFICATION.md).
 
 Unsigned local builds are supported by the command above. Distribution signing and notarization are outside this milestone.
 

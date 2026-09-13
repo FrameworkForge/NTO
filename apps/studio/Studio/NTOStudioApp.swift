@@ -4,20 +4,27 @@ import SwiftUI
 @main struct NTOStudioApp: App {
   @State private var workspace = WorkspaceState()
   private let store: ProjectStore?
+  private let library: LibraryController?
   private let startupError: String?
   init() {
     do {
-      store = try ProjectStore(container: ProjectStore.container())
+      let override = ProcessInfo.processInfo.environment["NTO_STUDIO_LIBRARY_PATH"]
+      let locations = try override.map { LibraryLocations(root: URL(fileURLWithPath: $0, isDirectory: true)) } ?? LibraryLocations.standard()
+      try FileManager.default.createDirectory(at: locations.root, withIntermediateDirectories: true)
+      let opened = try ProjectStore(container: ProjectStore.container(url: locations.root.appendingPathComponent("Library.store")))
+      store = opened
+      library = LibraryController(store: opened, locations: locations)
       startupError = nil
     } catch {
       store = nil
+      library = nil
       startupError = error.localizedDescription
     }
   }
   var body: some Scene {
-    WindowGroup {
-      if let store {
-        WorkspaceView(workspace: workspace, store: store)
+    Window("NTO Studio", id: "workspace") {
+      if let store, let library {
+        WorkspaceView(workspace: workspace, store: store, library: library)
       } else {
         ContentUnavailableView(
           "Library could not open", systemImage: "externaldrive.badge.exclamationmark",
@@ -31,6 +38,9 @@ import SwiftUI
       CommandGroup(replacing: .newItem) {
         Button("New Project") { workspace.newProjectRequested.toggle() }.keyboardShortcut(
           "n", modifiers: .command)
+        Button("Import Photographs…") { workspace.importRequested.toggle() }
+          .keyboardShortcut("i", modifiers: [.command, .shift])
+          .disabled(library?.isImporting != false)
       }
       CommandMenu("Workspace") {
         ForEach(Array(StudioMode.allCases.enumerated()), id: \.element.id) { i, mode in

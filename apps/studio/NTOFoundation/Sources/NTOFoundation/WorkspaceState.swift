@@ -19,6 +19,7 @@ public enum StudioMode: String, CaseIterable, Identifiable, Sendable {
 @MainActor @Observable public final class WorkspaceState {
   public var mode: StudioMode = .library
   public var newProjectRequested = false
+  public var importRequested = false
   public var selectedProjectID: UUID?
   public var selectedAssetID: UUID?
   public var sidebarVisible = true

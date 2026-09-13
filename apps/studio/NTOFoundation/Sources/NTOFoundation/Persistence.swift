@@ -14,14 +14,14 @@ import SwiftData
 }
 @MainActor @Observable public final class ProjectStore {
   public private(set) var projects: [LocalProject] = []
-  private let context: ModelContext
+  let context: ModelContext
   public init(container: ModelContainer) throws {
     context = ModelContext(container)
     context.autosaveEnabled = false
     try reload()
   }
   public static func container(url: URL? = nil, inMemory: Bool = false) throws -> ModelContainer {
-    let schema = Schema([LocalProject.self])
+    let schema = Schema([LocalProject.self, LocalPhoto.self, LocalPhotoMembership.self, LocalBrowsingState.self])
     let config: ModelConfiguration
     if let url {
       config = ModelConfiguration(schema: schema, url: url)

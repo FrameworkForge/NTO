@@ -4,7 +4,7 @@
 
 | Surface | Stack | Responsibility |
 | --- | --- | --- |
-| Studio | Swift 6, SwiftUI, macOS 26+, SwiftData | Workspace and local project persistence |
+| Studio | Swift 6, SwiftUI, macOS 26+, SwiftData | Workspace, local project/photo persistence, import, original previews |
 | Web | Next.js 16 App Router, React 19, TypeScript, CSS Modules | Portfolio/Gallery route shells |
 | Cloud | Supabase Postgres, Auth, private Storage, TypeScript Edge Functions | Remote records, ownership, project API, health |
 | Shared | JSON Schema, TypeScript interfaces, generated Swift Codable models, JSON tokens | Versioned interchange and consistent design |
@@ -34,3 +34,17 @@ The health function returns service name, status, and contract version, with no 
 ## Failure and future work
 
 Swift store errors reach an actionable alert. Cloud adapters classify failed requests; network/server failures can be retried. Web route errors offer retry and navigation. Future sync must journal work, handle conflicts explicitly, and publish replacements only after successful rendition creation. None of those deferred operations is simulated as completed here.
+
+## Phase 02 local photographic Library
+
+`LocalPhoto`, `LocalPhotoMembership`, and `LocalBrowsingState` extend the SwiftData schema without changing existing projects. Project membership is relational and indexed by project UUID; identical content has one local photo identity and can belong to multiple projects. The local models contain filesystem/bookmark state and are deliberately separate from public Codable contracts.
+
+`PhotoImportWorker` performs discovery, streaming SHA-256 hashing, metadata reads, and copy preparation on an actor. Each managed original lives in its own UUID directory. A partial file is flushed and atomically renamed before its database record is committed. Failed/cancelled items remove their uncommitted copy; committed photographs remain. Before the next import after a crash, recovery removes only unreferenced UUID directories in this library's managed Originals directory. It never cleans source folders or committed originals. Symbolic links and packages inside imported folders are not followed; unreadable folders and unsupported regular files are reported.
+
+`LibraryController` serializes main-actor persistence and publishes import state. It commits per photograph and refreshes the grid in batches. References use read-only security-scoped bookmarks, with source access held during import. Relinking requires the same SHA-256 fingerprint and retains the photo ID and metadata. Existing content added to another project retains its original storage choice and caption. There is no automatic conversion from reference to copy.
+
+`PhotoPreviews` uses ImageIO downsampling with orientation transforms. The grid requests 512-pixel thumbnails; selected-image screens request up to 2,000-pixel original previews. The decoded cache has a 64 MiB cost limit and 300-entry limit; derived JPEG disk cache is capped at 256 MiB. Visible tiles release their local image state on disappearance, and a small viewport neighbourhood is prefetched. Cached previews can remain visible with an original offline; the inspector checks source availability. New previews from references verify their content fingerprint and refuse changed source bytes. These are original previews, not edited renders or full-resolution focus inspection.
+
+Browsing state saves after a 250 ms debounce and flushes on project changes, backgrounding, and ordinary termination. The latest small browsing change can be lost on an immediate force-quit; committed import records do not depend on that debounce. Studio currently uses one workspace window so import coordination and store ownership remain unambiguous. The last project preference is restored if the project still exists.
+
+Platform references: [Apple ImageIO thumbnail creation](https://developer.apple.com/documentation/imageio/cgimagesourcecreatethumbnailatindex(_:_:_:)) and [read-only security-scoped bookmarks](https://developer.apple.com/documentation/foundation/nsurl/bookmarkdata(options:includingresourcevaluesforkeys:relativeto:)).

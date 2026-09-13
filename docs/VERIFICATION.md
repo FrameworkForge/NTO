@@ -1,5 +1,7 @@
 # Foundation verification
 
+This is the historical Phase 01 record. See [Phase 02 verification](PHASE-02-VERIFICATION.md) for the current import/Library implementation and checks.
+
 Verified locally on 13 September 2026, on Apple silicon running macOS 26.6.2 with Xcode 26.6.
 
 ## Automated checks

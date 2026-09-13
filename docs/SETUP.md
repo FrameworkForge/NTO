@@ -53,3 +53,18 @@ GitHub Actions definitions check web types/lint/build, contracts, generated file
 ## Local library storage
 
 Studio stores its library at `~/Library/Application Support/NTO/Studio/Library.store`, with SQLite companion files managed by SwiftData. This is independent of Supabase. Rebuilding the application does not remove local projects.
+
+## Studio import development
+
+Studio's default library is `~/Library/Application Support/NTO/Studio/Library.store`, with managed originals and derived previews alongside it. Copy mode preserves source files; reference mode requires the source location to remain available. A backup should include the database and managed Originals directory. Never remove originals to clear a preview cache.
+
+For an isolated development launch, set `NTO_STUDIO_LIBRARY_PATH` to a separate directory when launching the app executable. Close the ordinary Studio instance first. This override is for testing only; a normal launch reopens the default library.
+
+The Swift test suite generates JPEG/HEIC/TIFF fixtures in temporary directories. Optional manual helpers are explicitly skipped unless enabled:
+
+```sh
+NTO_QA_FIXTURES=/private/tmp/nto-manual-images ./scripts/pnpm test:studio --filter PhotoLibraryTests/testCreateOptionalManualVerificationFixtures
+NTO_QA_STRESS_LIBRARY=/private/tmp/nto-isolated-stress ./scripts/pnpm test:studio --filter PhotoLibraryTests/testCreateOptionalStressLibrary
+```
+
+Use a fresh empty directory for each stress generation. The stress library contains 10,000 synthetic records backed by one generated image, for grid and selection testing; it is not a valid production photo collection or a mixed-RAW import benchmark. Test helpers never import personal images. All local filesystem fields remain outside public JSON payloads.

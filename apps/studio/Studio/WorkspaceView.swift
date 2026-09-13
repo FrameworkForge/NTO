@@ -1,9 +1,17 @@
+import AppKit
+import UniformTypeIdentifiers
 import NTOFoundation
 import SwiftUI
 
 struct WorkspaceView: View {
   @Bindable var workspace: WorkspaceState
   @Bindable var store: ProjectStore
+  @Bindable var library: LibraryController
+  @State private var showImportSheet = false
+  @State private var importURLs: [URL] = []
+  @State private var dropTargeted = false
+  @AppStorage("lastProjectID") private var lastProjectID = ""
+  @Environment(\.scenePhase) private var scenePhase
   @State private var showProjectSheet = false
   @State private var editingProject: LocalProject?
   @State private var projectTitle = ""
@@ -65,7 +73,7 @@ struct WorkspaceView: View {
             }
             Spacer()
             Toggle("Development fixtures", isOn: $demo).toggleStyle(.checkbox).font(.caption)
-              .onChange(of: demo) { _, enabled in if !enabled { workspace.selectedAssetID = nil } }
+              .onChange(of: demo) { _, enabled in if !enabled { workspace.selectedAssetID = library.browsing.activeID } }
           }.padding(20).frame(width: 210)
           Divider()
         }
@@ -77,6 +85,7 @@ struct WorkspaceView: View {
                 Text(modeDescription).font(.caption).foregroundStyle(.secondary)
               }
               Spacer()
+              Button("Import…") { presentImport() }.disabled(library.isImporting)
               if let project = selectedProject {
                 Button("Rename") {
                   editingProject = project
@@ -86,6 +95,9 @@ struct WorkspaceView: View {
               }
             }.padding(24)
             Divider()
+          }
+          if !workspace.isFocused || library.isImporting {
+            LibraryImportStatus(library: library)
           }
           ZStack {
             NTOTokens.Color.black
@@ -108,6 +120,13 @@ struct WorkspaceView: View {
                     .secondary)
                 }
               }
+            } else if !library.photos.isEmpty {
+              if workspace.mode == .library {
+                PhotoLibraryGrid(library: library, isFocused: workspace.isFocused) { workspace.mode = .cull }
+                  .id(library.projectID)
+              } else {
+                SelectedPhotoCanvas(library: library, mode: workspace.mode, isFocused: workspace.isFocused)
+              }
             } else {
               ContentUnavailableView {
                 Label(emptyTitle, systemImage: workspace.mode.symbol)
@@ -115,31 +134,32 @@ struct WorkspaceView: View {
                 Text(emptyDescription)
               } actions: {
                 if workspace.mode == .library {
-                  Button("New Project") {
-                    editingProject = nil
-                    projectTitle = ""
-                    showProjectSheet = true
-                  }
+                  Button("Import photographs…") { presentImport() }.disabled(library.isImporting)
                 }
               }
             }
           }
+          .overlay { if dropTargeted { Rectangle().stroke(.white, lineWidth: 3).allowsHitTesting(false) } }
+          .dropDestination(for: URL.self) { urls, _ in
+            guard !library.isImporting, urls.allSatisfy(\.isFileURL), !urls.isEmpty else { return false }
+            importURLs = urls; showImportSheet = true; return true
+          } isTargeted: { dropTargeted = $0 }
         }.frame(maxWidth: .infinity, maxHeight: .infinity)
         if workspace.inspectorVisible && geometry.size.width >= 1000 {
           Divider()
-          VStack(alignment: .leading, spacing: 16) {
-            Text("INSPECTOR").font(.caption).foregroundStyle(.secondary)
-            Text(workspace.selectedAssetID == nil ? "No photograph selected" : "Development study")
-            Text("Metadata and editing controls will appear here as those features are added.")
-              .font(.caption).foregroundStyle(.secondary)
-            Spacer()
-          }.padding(20).frame(width: 230)
+          if demo {
+            ContentUnavailableView("Development fixture", systemImage: "photo",
+              description: Text("Abstract test artwork. Disable fixtures to return to your photographs."))
+              .frame(width: 230)
+          } else {
+            PhotoMetadataInspector(library: library).frame(width: 230)
+          }
         }
       }
     }
     .frame(minWidth: 700, minHeight: 500).background(NTOTokens.Color.canvas).preferredColorScheme(
       .dark
-    )
+    ).tint(NTOTokens.Color.paper)
     .background(WorkspaceKeyboardShortcuts { workspace.toggleFocus() }.frame(width: 0, height: 0))
     .toolbar {
       ToolbarItem {
@@ -151,6 +171,13 @@ struct WorkspaceView: View {
             systemImage: workspace.isFocused
               ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
         }.help("Toggle Focus Mode (Tab)")
+      }
+    }
+    .sheet(isPresented: $showImportSheet) {
+      ImportPhotosSheet(library: library, store: store, initialURLs: importURLs) { id in
+        demo = false
+        workspace.selectedProjectID = id
+        workspace.mode = .library
       }
     }
     .sheet(isPresented: $showProjectSheet) {
@@ -167,23 +194,40 @@ struct WorkspaceView: View {
       }.padding(28).frame(width: 380)
     }
     .alert(
-      "Project could not be saved",
-      isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })
+      "Studio needs your attention",
+      isPresented: Binding(get: { errorMessage != nil || library.errorMessage != nil }, set: { if !$0 { errorMessage = nil; library.errorMessage = nil } })
     ) {
-      Button("OK") { errorMessage = nil }
+      Button("OK") { errorMessage = nil; library.errorMessage = nil }
     } message: {
-      Text(errorMessage ?? "Try saving again.")
+      Text(errorMessage ?? library.errorMessage ?? "Try again.")
     }
     .onChange(of: workspace.newProjectRequested) { _, _ in
       editingProject = nil
       projectTitle = ""
       showProjectSheet = true
     }
+    .onChange(of: workspace.importRequested) { _, _ in presentImport() }
+    .onChange(of: workspace.selectedProjectID) { _, id in
+      library.open(projectID: id)
+      workspace.selectedAssetID = library.browsing.activeID
+      lastProjectID = id?.uuidString ?? ""
+    }
+    .onChange(of: library.browsing.activeID) { _, id in workspace.selectedAssetID = id }
+    .onChange(of: scenePhase) { _, phase in if phase != .active { library.flushBrowsing() } }
+    .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
+      library.flushBrowsing()
+    }
     .onAppear {
       if workspace.selectedProjectID == nil {
-        workspace.selectedProjectID = store.projects.first?.id
+        workspace.selectedProjectID = store.projects.first { $0.id.uuidString == lastProjectID }?.id ?? store.projects.first?.id
       }
+      library.open(projectID: workspace.selectedProjectID)
+      workspace.selectedAssetID = library.browsing.activeID
     }
+  }
+  private func presentImport() {
+    guard !library.isImporting else { return }
+    importURLs = []; showImportSheet = true
   }
   private func saveProject() {
     do {
@@ -213,8 +257,8 @@ struct WorkspaceView: View {
   }
   private var emptyDescription: String {
     switch workspace.mode {
-    case .library: "Create and organise projects. Photo import is coming in the next milestone."
-    case .cull: "Culling will become available once photographs can be imported."
+    case .library: "Drop files or folders here, or choose Import photographs to begin. Originals are never changed."
+    case .cull: "Import photographs into Library to preview them here. Rating and culling controls are not available yet."
     case .edit: "The rendering boundary is ready. Editing tools are a later milestone."
     case .publish: "Cloud publishing is not connected in this foundation build."
     }
