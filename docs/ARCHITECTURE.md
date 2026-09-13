@@ -48,3 +48,29 @@ Swift store errors reach an actionable alert. Cloud adapters classify failed req
 Browsing state saves after a 250 ms debounce and flushes on project changes, backgrounding, and ordinary termination. The latest small browsing change can be lost on an immediate force-quit; committed import records do not depend on that debounce. Studio currently uses one workspace window so import coordination and store ownership remain unambiguous. The last project preference is restored if the project still exists.
 
 Platform references: [Apple ImageIO thumbnail creation](https://developer.apple.com/documentation/imageio/cgimagesourcecreatethumbnailatindex(_:_:_:)) and [read-only security-scoped bookmarks](https://developer.apple.com/documentation/foundation/nsurl/bookmarkdata(options:includingresourcevaluesforkeys:relativeto:)).
+
+## Updated long-term architecture direction
+
+The [owner's master context](MASTER-CONTEXT.md) establishes a portability goal while retaining the current Apple-native implementation. This section records design constraints for future work; no package extraction, renderer rewrite, shader backend, or new platform was implemented for the context update.
+
+### Current implementation versus intended shared core
+
+`NTOFoundation` currently includes SwiftData, ImageIO, SwiftUI/AppKit views and native services. It is **Apple-only**, not a portable NTO Core package. As boundaries become useful, candidates for extraction include Core, Catalog, Metadata, EditRecipe, Presets, Sync, and Cloud clients. Shared packages should avoid SwiftUI, AppKit, UIKit, Core Image, or Metal dependencies unless explicitly platform-specific. A portable project/interchange format is separate from the native database and security-scoped filesystem access.
+
+### Imaging and renderer/decoder boundaries
+
+The canonical recipe describes photographic intent (for example exposure in EV, white balance, tone, detail, and normalized crop), not a serialized chain of CIFilter identifiers. Rendering stays asynchronous and outside views. A future RAW decoder boundary should permit Apple-native decoding now and another implementation later.
+
+The long-term GPU preference is **Metal on Apple** and **Vulkan on Windows/Android/Linux**. The current Core Image/ImageIO approach remains appropriate for the Mac proof of concept; this preference does not require replacing it now or implementing Vulkan. DirectX is not the default plan and would require an explicit architecture reconsideration.
+
+A future platform-neutral render graph should define algorithms, parameter meanings, colour handling, and stage ordering separately from backend shader code. The master context's graph is conceptual; it does not silently replace the GDD's existing versioned pipeline order. Settle precise semantics as the edit engine is implemented. Cross-backend equivalence must be measured with agreed image/colour tolerances, reference renders, and performance checks, not assumed from using the same parameter names.
+
+Canon CR3 is a compatibility target requiring real file/camera qualification. Successful CR2 preview import does not certify CR3 decoding or RAW edit/export parity.
+
+### Optional hosted ecosystem
+
+Supabase remains the agreed initial Cloud foundation. Keep local work independent of sessions or service availability. Add publication, rendition, sync, and secure delivery capabilities after the local workflow is reliable; no new hosting stack is selected here. Keep heavy image/ZIP processing in suitable worker runtimes.
+
+Later Commerce builds on stable Asset IDs and publication/delivery policies. Server-verified, idempotent payment callbacks drive paid orders and asset entitlements; neither browser prices nor a success page authorize delivery. Signed URLs are delivery mechanisms, not purchase identity. Provider choice, refunds/revocation, payouts, taxes, and access policy details remain to be designed for the intended markets.
+
+Mobile is a companion focused on cull, quick edits, publish/review, Gallery management, and activity/sales rather than a reduced-size desktop UI. Windows starts with portable core/project/decoder/render/export validation before a full native UI. Android/Linux come only when justified. Scale the initial API/database/storage/CDN/worker design according to actual demand rather than hypothetical mass adoption.

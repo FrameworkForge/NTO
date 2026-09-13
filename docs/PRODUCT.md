@@ -6,6 +6,18 @@ NTO_Ecosystem_GDD_v1.pdf, 58 pages, supplied by the owner. Pages 5 and 53–54 d
 
 NTO Studio is native macOS photographic software. Gallery delivers work on the web. nto.motion presents editorial project stories. Cloud connects stable asset identities, renditions, permissions, and eventual publishing.
 
+## Current owner direction
+
+The [master context received 13 September 2026](MASTER-CONTEXT.md) extends the GDD with open-source, business, cross-platform, Imaging, Commerce, and Mobile direction. [Studio v0.1](STUDIO-V0.1.md) reconciles scope differences and is the immediate priority; [Ecosystem strategy](ECOSYSTEM-STRATEGY.md) records deferred work and undecided commercial/licensing options.
+
+NTO is intended to become an open-source photography platform taking photographers from camera to customer: Shoot → Import → Cull → Edit → Publish → Sell → Deliver. The current repository remains private. Current code is not automatically open-source licensed merely because that is the intended direction.
+
+**Prove the local Mac workflow first:** create project → import real photographs → Library → Cull → Edit → save non-destructively → reopen correctly → JPEG export. Do not treat the existing preview-only Cull/Edit/Publish screens as completion of those features. A complete local Studio proof of concept comes before expanding hosted services or other platforms.
+
+Cloud is optional. The local editor must not require an account, subscription, storage purchase, or library upload. Photographer-owned originals, exports, catalog information, metadata, recipes, and presets should avoid artificial lock-in. Portable interchange remains work to implement; the existing SwiftData store is an Apple-local persistence implementation.
+
+The owner clarified that the current request is **documentation only**. This update records future priorities; it does not authorize implementing the newly described features now.
+
 ## Phase 01: implemented foundations
 
 - Native Studio shell: Library, Cull, Edit, Publish; selection retained across modes; collapsible chrome and reversible Focus Mode.
@@ -40,6 +52,9 @@ Collections, metadata filtering/search/sorting, editable ratings and description
 5. Native menus, window conventions, keyboard access, and reduced motion are part of the experience.
 6. Public/unlisted visibility does not automatically authorize private object access.
 7. Failures must be actionable; incomplete features must never imply successful work.
+8. Local editing/export must not be gated by accounts or paid hosted services.
+9. Canonical recipes express portable photographic intent, not platform-specific filter calls. The current native implementation may use Apple APIs behind its boundaries.
+10. Future pricing, licensing, repository visibility, payment handling, and new platforms require deliberate decisions; examples are not commitments.
 
 ## Foundation acceptance
 

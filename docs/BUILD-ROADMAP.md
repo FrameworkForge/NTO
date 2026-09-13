@@ -2,7 +2,32 @@
 
 Source: **NTO_Ecosystem_GDD_v1.pdf**, product/design specification v1.0, 58 pages. Page references below use PDF page numbers. The original is at `/Users/nathanolivier/Downloads/NTO_Ecosystem_GDD_v1.pdf`; it is not bundled in this repository.
 
-This document translates the GDD's feature groups into a recommended dependency-based implementation order. The GDD itself does not prescribe a schedule. The phases below are planning recommendations, not additional product requirements or time estimates. Its embedded agent handoff is reference material, not authorization to build features.
+This document translates the GDD's feature groups into a recommended dependency-based implementation order and incorporates the owner's later [master context](MASTER-CONTEXT.md). The GDD itself does not prescribe a schedule. The phases below are planning recommendations, not additional product requirements or time estimates. Its embedded agent handoff is reference material, not authorization to build features.
+
+## Updated priority: Studio first
+
+The owner's later context refines the release strategy: make the local Mac app useful before expanding the ecosystem. [Studio v0.1](STUDIO-V0.1.md) defines the immediate acceptance gate. The current context-incorporation request is documentation only; it does not start any of these feature phases.
+
+The numbered phases below retain their original GDD feature mapping. They are implementation groups, not an instruction to finish the entire ecosystem before releasing useful Studio software. In particular, a JPEG-first Studio v0.1 can precede the broader GDD CORE release. TIFF remains in the full GDD scope; it is not required before the initial JPEG proof of concept. Proposed optics, advanced tools, and AI work do not take precedence over Gallery/Commerce merely because they appear in the GDD backlog.
+
+### Revised release and ecosystem sequence
+
+| Stage | Next outcome | Relationship to the technical phases |
+| --- | --- | --- |
+| 1 | Reliable private Mac Studio: import, Library, Cull, Edit, save/reopen, JPEG export | Phases 01-07, with reproducible Mac defects addressed first |
+| 2 | Process real shoots and fix demonstrated problems | Validate the local workflow before more products |
+| 3 | Targeted architecture cleanup and useful portable boundaries | Avoid a speculative rewrite; current NTOFoundation remains Apple-only |
+| 4 | Prepare a credible open-source Studio v0.1 | Release documents and a chosen license; visibility/license changes remain separate decisions |
+| 5 | Focused community contribution and maintenance | Documentation, small fixes, compatibility, and performance |
+| 6 | Optional Cloud | Phases 08-09; no account/subscription gate on local tools |
+| 7 | Real Gallery/Portfolio publishing and safe updates | Phases 10-12; use real delivery workflows |
+| 8 | Basic Commerce and automatic delivery | New later scope: orders, verified payments, asset entitlements, protected downloads |
+| 9 | Mobile companion | Focused import/cull/quick edit/publish/manage/sales experience |
+| 10 | Validated paid hosted services | Research real costs and demand; all example prices remain provisional |
+| 11 | Windows core → project read → decode → render → export, then native UI | Portable semantics first; Vulkan is the preferred future non-Apple backend |
+| 12 | Android/Linux if justified | No implementation or release commitment yet |
+
+Optics, client selections, version history, sports/school features, team products, marketplaces, and AI remain explicitly scoped expansions rather than automatic next steps. See [Ecosystem strategy](ECOSYSTEM-STRATEGY.md) for business, open-source, and Commerce boundaries.
 
 ## Where we are now
 
@@ -149,6 +174,8 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 **Terminology:** synchronizing edits across photos is distinct from synchronizing data with Cloud in Phase 08.
 
 ## Phase 07 - Export
+
+**Updated release gate:** deliver reliable JPEG export for Studio v0.1 first. TIFF and additional profile/export options remain full-GDD follow-up scope, not a reason to delay the first complete local workflow.
 
 **GDD reference:** 18 Export, p. 24.
 
@@ -362,6 +389,6 @@ Every numbered GDD feature has a place in this roadmap. Repeated phase numbers i
 
 ## Using this roadmap
 
-Continue with Phase 03. For each phase, turn the unchecked tasks into bounded implementation requests, validate its exit gate, then record completion evidence before advancing the status table. Update this roadmap when product decisions change; do not silently reinterpret deferred features as CORE.
+For the next separately requested implementation, continue with Phase 03 after resolving any reported Mac reliability problems. Use the Studio-first release sequence above to decide when hosted and future-platform phases begin. For each phase, turn the unchecked tasks into bounded implementation requests, validate its exit gate, then record completion evidence before advancing the status table. Update this roadmap when product decisions change; do not silently reinterpret deferred features as CORE.
 
 Related documents: [Product](PRODUCT.md), [Architecture](ARCHITECTURE.md), [Design system](DESIGN-SYSTEM.md), [Setup](SETUP.md), and [Verification](VERIFICATION.md).

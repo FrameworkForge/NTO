@@ -2,10 +2,19 @@
 
 Photography. Software. Motion.
 
-A foundation for **NTO Studio** (native macOS), **nto.motion + Gallery** (web), and **NTO Cloud** (Supabase). Foundations and local photo import/Library are implemented. This is not the GDD's complete CORE release.
+NTO is a photography ecosystem intended to become open source, built around **Shoot → Import → Cull → Edit → Publish → Sell → Deliver**. The goal is a native, local-first workflow where photographers own their originals, catalog information, edits, presets, and exports.
+
+**Current priority: get NTO Studio working as a complete local Mac photography application.** Foundations and local photo import/Library are implemented. Culling controls, non-destructive editing, and JPEG export are still ahead. This is not yet Studio v0.1 or the GDD's complete CORE release.
+
+Local import, organisation, editing, and export must remain usable without an account, subscription, or Cloud upload. Optional hosted Cloud, Gallery, Portfolio/nto.motion, Commerce, Mobile, and future platforms are the longer-term direction. Their existence in the docs does not mean they are implemented.
+
+Development remains **private** for now. Open-source release is a later readiness decision; MPL 2.0 is only a candidate for review, and no license has been adopted by this documentation update. Pricing and plan examples are proposals, not offers.
 
 ## Start here
 
+- [Current Studio v0.1 priority and acceptance criteria](docs/STUDIO-V0.1.md)
+- [Owner's full master context](docs/MASTER-CONTEXT.md)
+- [Ecosystem, open-source, and business direction](docs/ECOSYSTEM-STRATEGY.md)
 - [Product and milestone boundaries](docs/PRODUCT.md)
 - [Chronological ecosystem build roadmap](docs/BUILD-ROADMAP.md)
 - [Architecture and data flow](docs/ARCHITECTURE.md)
@@ -58,4 +67,4 @@ Unsigned local builds are supported by the command above. Distribution signing a
 
 Cloud requires a running Docker-compatible engine. On this Mac, `./scripts/container-start` starts the prepared engine and `./scripts/container-stop` stops it. Stop an existing web dev server before running `test:web`. `cloud:reset` resets this **local development** database. It does not target a hosted project. Integration tests create isolated local test users and remove them afterwards.
 
-No personal photographs, hosted resources, or production secrets are included.
+No personal photographs, hosted resources, or production secrets are included in the repository.

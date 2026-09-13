@@ -24,3 +24,9 @@ Bundled SVG studies are deterministic abstract development artwork, labelled acc
 ## Focus Mode
 
 Studio stores sidebar and inspector visibility on entry and restores it on exit. Selection and active mode are independent of chrome. Escape closes the web gallery dialog; focus returns to the opening tile. Native dialog focus containment supplies a keyboard exit without trapping the visitor.
+
+## Owner context alignment
+
+The [master context](MASTER-CONTEXT.md) reinforces the existing minimal, monochrome, editorial, photograph-first identity and native platform behavior. Its O motif may eventually extend to payment/delivery states, but this does not add those flows now. Studio's current priority is a usable local Mac workflow; Mobile and other desktop platforms should later adapt controls, gestures, and window conventions to their own platform.
+
+The context's `#777777` grey is a proposed brand neutral. Existing canonical tokens (including the lighter muted text colour) remain unchanged in this documentation update. Any future palette change should preserve appropriate contrast for the actual background and text role rather than blindly replacing all greys. The app does not gain new visual effects, glass surfaces, motion, or tools from this update.
