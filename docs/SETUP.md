@@ -2,15 +2,16 @@
 
 ## Toolchain
 
-- macOS 26+ with Xcode 26+ for Studio. Review and accept Apple's license in Xcode or `sudo xcodebuild -license`; the scaffold does not accept agreements automatically.
-- Node 24.21.0, pnpm 10.32.1, and Python 3. `./scripts/pnpm` finds the isolated Node installation on this Mac; other machines can use their existing PATH.
-- A Docker-compatible container engine for local Supabase. Container tools prepared for this workspace live outside the repository under `~/.local/share/nto/toolchains/containers`.
+- macOS 26+ with Xcode 26+ for Studio. Review and accept Apple's license in Xcode or `sudo xcodebuild -license`; the scaffold does not accept agreements automatically. Command Line Tools alone cannot build the package: the SwiftData macro plugin ships only with Xcode. If `xcode-select -p` points at Command Line Tools and you cannot change it, export `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` (or the beta path) for the build and test commands.
+- If the checkout lives in an iCloud Drive or other File Provider-synced folder (for example under `~/Documents` with Desktop & Documents syncing), build products receive Finder metadata and ad-hoc codesign fails with "resource fork, Finder information, or similar detritus not allowed". Build outside the synced tree: `swift test --package-path apps/studio/NTOFoundation --scratch-path /path/outside/checkout` and `xcodebuild … -derivedDataPath /path/outside/checkout`. The root scripts use in-checkout paths, which are fine on CI and on unsynced checkouts.
+- Node 24.21.0 (`.node-version`), pnpm 10.32.1, and Python 3. Plain `pnpm` works with those on your PATH. `./scripts/pnpm` is a convenience wrapper: it prepends an isolated Node toolchain if one exists at `NTO_NODE_DIR` (default `~/.local/share/nto/toolchains/node-v24.21.0-darwin-arm64/bin`) and points `DOCKER_HOST` at the Lima VM below when present; otherwise it is transparent. With the wrong Node on PATH pnpm warns about an unsupported engine; install Node 24 before relying on check results.
+- A Docker-compatible container engine for local Supabase: Docker Desktop, or Lima via `./scripts/container-start`. The container scripts use `limactl` and the Docker CLI from `NTO_CONTAINER_BIN` if set, else from PATH.
 
 Install dependencies with `./scripts/pnpm install --frozen-lockfile`. Never copy production service-role credentials into the frontend or native app. Examples contain names and placeholders only.
 
 ## Local Cloud
 
-The Supabase CLI is locked as a workspace dependency. Start Docker Desktop or the prepared NTO runtime with `./scripts/container-start`. From the repository root:
+The Supabase CLI is locked as a workspace dependency. Start Docker Desktop, or start the Lima runtime with `./scripts/container-start`. From the repository root:
 
 ```sh
 ./scripts/pnpm cloud:start
@@ -21,7 +22,7 @@ The Supabase CLI is locked as a workspace dependency. Start Docker Desktop or th
 
 The API is http://127.0.0.1:54321; Studio is http://127.0.0.1:54323. The function is `/functions/v1/health`. `serve` stays running until interrupted. `pnpm --filter @nto/cloud stop` stops the stack while retaining local data. `cloud:reset` recreates only the local development database and reapplies migrations. Integration tests restrict their target to localhost, create two isolated users, test access boundaries, and clean up.
 
-If using the prepared Lima runtime, start it with the documented `scripts/container-start` command, then use the project launcher. The launcher sets DOCKER_HOST only when no external value was supplied and the NTO socket exists. The prepared VM mounts only this workspace as writable. Run `./scripts/container-stop` to release the VM’s resources when finished.
+If using Lima, `scripts/container-start` creates a VM named `nto` on first run (4 CPUs, 6 GiB, 30 GiB disk, Docker template) and starts the existing one afterwards; then use the project launcher. The launcher sets DOCKER_HOST only when no external value was supplied and the NTO socket exists. The VM mounts only this workspace as writable. Run `./scripts/container-stop` to release the VM’s resources when finished.
 
 ## Web preview
 
@@ -52,7 +53,7 @@ GitHub Actions definitions check web types/lint/build, contracts, generated file
 
 ## Local library storage
 
-Studio stores its library at `~/Library/Application Support/NTO/Studio/Library.store`, with SQLite companion files managed by SwiftData. This is independent of Supabase. Rebuilding the application does not remove local projects.
+Studio stores its library at `~/Library/Application Support/NTO/Studio/Library.store`, with SQLite companion files managed by SwiftData. Presets are plain JSON files in the `Presets` folder next to it (see [PRESETS.md](PRESETS.md)) and belong in the same backup. This is independent of Supabase. Rebuilding the application does not remove local projects.
 
 ## Studio import development
 

@@ -8,6 +8,7 @@ struct WorkspaceView: View {
   @Bindable var store: ProjectStore
   @Bindable var library: LibraryController
   @State private var showImportSheet = false
+  @State private var showExportSheet = false
   @State private var importURLs: [URL] = []
   @State private var dropTargeted = false
   @AppStorage("lastProjectID") private var lastProjectID = ""
@@ -95,6 +96,8 @@ struct WorkspaceView: View {
               }
               Spacer()
               Button("Import…") { presentImport() }.disabled(library.isImporting)
+              Button("Export…") { presentExport() }.disabled(library.actionableIDs.isEmpty || library.exporter.isRunning)
+                .help("Export the selected photographs with their edits (Shift-Cmd-E)")
               if let project = selectedProject {
                 Button("Rename") {
                   editingProject = project
@@ -107,6 +110,9 @@ struct WorkspaceView: View {
           }
           if !workspace.isFocused || library.isImporting {
             LibraryImportStatus(library: library)
+          }
+          if !workspace.isFocused || library.exporter.isRunning {
+            ExportStatus(library: library)
           }
           ZStack {
             NTOTokens.Color.black
@@ -189,6 +195,9 @@ struct WorkspaceView: View {
         workspace.mode = .library
       }
     }
+    .sheet(isPresented: $showExportSheet) {
+      ExportSheet(library: library, projectTitle: selectedProject?.title ?? "")
+    }
     .sheet(isPresented: $showProjectSheet) {
       VStack(alignment: .leading, spacing: 20) {
         Text(editingProject == nil ? "New Project" : "Rename Project").font(.title2)
@@ -216,6 +225,7 @@ struct WorkspaceView: View {
       showProjectSheet = true
     }
     .onChange(of: workspace.importRequested) { _, _ in presentImport() }
+    .onChange(of: workspace.exportRequested) { _, _ in presentExport() }
     .onChange(of: workspace.selectedProjectID) { _, id in
       library.open(projectID: id)
       workspace.selectedAssetID = library.browsing.activeID
@@ -238,6 +248,11 @@ struct WorkspaceView: View {
     guard !library.isImporting else { return }
     importURLs = []; showImportSheet = true
   }
+  private func presentExport() {
+    guard !library.exporter.isRunning else { return }
+    if library.actionableIDs.isEmpty { errorMessage = "Select the photographs to export in Library or Cull first." ; return }
+    showExportSheet = true
+  }
   private func saveProject() {
     do {
       if let editingProject {
@@ -252,7 +267,7 @@ struct WorkspaceView: View {
     switch workspace.mode {
     case .library: "Your photographic workspace"
     case .cull: "A space for the final selection"
-    case .edit: "Non-destructive editing foundation"
+    case .edit: "Non-destructive editing"
     case .publish: "From Studio to the world"
     }
   }
@@ -268,7 +283,7 @@ struct WorkspaceView: View {
     switch workspace.mode {
     case .library: "Drop files or folders here, or choose Import photographs to begin. Originals are never changed."
     case .cull: "Import photographs into Library to rate, flag and review them here."
-    case .edit: "The rendering boundary is ready. Editing tools are a later milestone."
+    case .edit: "Choose a photograph in Library to edit it. Originals are never changed."
     case .publish: "Cloud publishing is not connected in this foundation build."
     }
   }

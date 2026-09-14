@@ -17,13 +17,22 @@ The existing v1 fields are retained. This milestone defines their first implemen
 | noiseReduction | 0…1 mapped to Core Image noise level 0…0.1, without extra sharpening | 0 |
 | crop | Normalized top-left rectangle on the oriented original; positive size wholly within [0,1] | Full image |
 | rotation | Clockwise degrees −180…180, applied after crop | 0 |
+| highlights | −1…1; moves the three-quarter tone (0.75 in sRGB-encoded tone) by ±0.10 | 0 |
+| shadows | −1…1; moves the quarter tone (0.25) by ±0.10 | 0 |
+| whites | −1…1; positive pulls the white point in to 1 − 0.15·whites (clipping), negative lowers output white to 1 + 0.15·whites | 0 |
+| blacks | −1…1; negative pulls the black point in to −0.15·blacks (clipping), positive lifts output black to 0.15·blacks | 0 |
+| vibrance | −1…1; saturation weighted toward muted colours, applied before saturation | 0 |
 | revision | Positive, monotonically increasing safe JSON integer | 1 |
+
+The five tonal-range and vibrance fields were added in Phase 05 with a schema default of 0. They are not required in the JSON Schema, the TypeScript interface marks them optional, and the generated Swift decoder substitutes 0 when absent, so recipes and edit journals saved before Phase 05 decode unchanged and render identically. Encoders always write them.
 
 RAW null temperature retains camera/as-shot white balance. Explicit temperature replaces its Kelvin value; tint offsets the decoder's as-shot tint, clamped to its supported range. Raster white balance corrects a supplied neutral relative to D65 (6500 K, zero tint); null preserves the existing appearance unless tint is adjusted. This is not RAW recovery from a JPEG.
 
-The pipeline is **decode → camera/RAW → tone → colour → detail → geometry → effects → output**. `CIRAWFilter` handles supported RAW; Core Image loads oriented non-RAW images and their source colour profiles. RAW uses full decode scale and non-draft mode, with lens correction disabled for the deferred optics workflow. Other decoder baseline processing remains camera/system dependent. Tone applies exposure then contrast; colour applies raster white balance where needed, then saturation. Detail works at original resolution. Geometry crops then rotates into its bounding box; exposed rotation corners are black. Effects are identity in v1.
+Direction: `temperature` names the illuminant under which a neutral was captured, and the renderer corrects that neutral toward D65. A lower Kelvin therefore cools the image and a higher Kelvin warms it, the same convention as a conventional editor's temperature slider. The Edit controls (Phase 05) expose this directly; verified in `EditingTests`.
 
-Working colour space is extended linear sRGB using half-float processing; output is opaque 8-bit SDR sRGB. Both preview and full output use the same photographic graph, followed by output resizing without upscaling. PNG and TIFF are lossless; JPEG currently uses fixed quality 0.95. These are renderer outputs for tests/integration, not the future export dialog or delivery workflow.
+The pipeline is **decode → camera/RAW → tone → colour → detail → geometry → effects → output**. `CIRAWFilter` handles supported RAW; Core Image loads oriented non-RAW images and their source colour profiles. RAW uses full decode scale and non-draft mode, with lens correction disabled for the deferred optics workflow. Other decoder baseline processing remains camera/system dependent. Tone applies exposure, then contrast, then the tonal range as one five-point curve through (blacks point), (0.25, 0.25 + 0.10·shadows), the pinned midtone (0.5, 0.5), (0.75, 0.75 + 0.10·highlights) and (whites point); the curve is skipped when all four values are 0. The control points are expressed in sRGB-encoded tone, and the engine's tests confirm that a 0.25 grey moves to 0.35 under shadows +1 while 0.5 stays fixed. Colour applies raster white balance where needed, then vibrance, then saturation. Detail works at original resolution. Geometry crops then rotates into its bounding box; exposed rotation corners are black. Effects are identity in v1.
+
+Working colour space is extended linear sRGB using half-float processing; output is opaque 8-bit SDR sRGB. Both preview and full output use the same photographic graph, followed by output resizing without upscaling. PNG and TIFF are lossless; JPEG quality is part of `RenderSpecification` (0.1…1, default 0.95; the export sheet offers 50–100%). Since Phase 07 the export workflow uses these outputs directly, copying the encoded bytes to disk without re-encoding when attaching metadata.
 
 ## Persistence and history
 

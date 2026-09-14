@@ -1,12 +1,12 @@
 # NTO ecosystem: chronological build roadmap
 
-Source: **NTO_Ecosystem_GDD_v1.pdf**, product/design specification v1.0, 58 pages. Page references below use PDF page numbers. The original is at `/Users/nathanolivier/Downloads/NTO_Ecosystem_GDD_v1.pdf`; it is not bundled in this repository.
+Source: **NTO_Ecosystem_GDD_v1.pdf**, product/design specification v1.0, 58 pages. Page references below use PDF page numbers. The original is held by the owner and is not bundled in this repository.
 
 This document translates the GDD's feature groups into a recommended dependency-based implementation order and incorporates the owner's later [master context](MASTER-CONTEXT.md). The GDD itself does not prescribe a schedule. The phases below are planning recommendations, not additional product requirements or time estimates. Its embedded agent handoff is reference material, not authorization to build features.
 
 ## Updated priority: Studio first
 
-The owner's later context refines the release strategy: make the local Mac app useful before expanding the ecosystem. [Studio v0.1](STUDIO-V0.1.md) defines the immediate acceptance gate. The current context-incorporation request is documentation only; it does not start any of these feature phases.
+The owner's later context refines the release strategy: make the local Mac app useful before expanding the ecosystem. [Studio v0.1](STUDIO-V0.1.md) defines the immediate acceptance gate. Incorporating that context into the documentation did not by itself start any feature phase; each phase begins as a separately requested implementation.
 
 The numbered phases below retain their original GDD feature mapping. They are implementation groups, not an instruction to finish the entire ecosystem before releasing useful Studio software. In particular, a JPEG-first Studio v0.1 can precede the broader GDD CORE release. TIFF remains in the full GDD scope; it is not required before the initial JPEG proof of concept. Proposed optics, advanced tools, and AI work do not take precedence over Gallery/Commerce merely because they appear in the GDD backlog.
 
@@ -31,9 +31,9 @@ Optics, client selections, version history, sports/school features, team product
 
 ## Where we are now
 
-**Phases 01–04 are implemented and locally verified, with verification limits recorded. Phase 05, Core editing experience, is the next build.**
+**Phases 01–07 are implemented and locally verified, with verification limits recorded. The local import → cull → edit → export workflow now exists in code, including the crop tool, eyedropper and 100% inspection; live verification with real shoots (release stage 2) is the next gate before any Cloud phase.**
 
-Studio now imports photographs, persists local asset identities and project memberships, and provides a thumbnail Library with metadata and original previews. Collections, saved filters, editable metadata and keyboard culling now work locally. Edit now renders originals through saved recipes with undo/redo and the first tone/colour controls. The website shells, shared models, and local Supabase infrastructure also exist. Local verification is documented in [Phase 04 verification](PHASE-04-VERIFICATION.md) and the historical [foundation record](VERIFICATION.md). The initial foundation commit is on `main` in the private [Nathan-Olivier/NTO repository](https://github.com/Nathan-Olivier/NTO).
+Studio now imports photographs, persists local asset identities and project memberships, and provides a thumbnail Library with metadata and original previews. Collections, saved filters, editable metadata and keyboard culling now work locally. Edit now renders originals through saved recipes with undo/redo, grouped Light/Colour/Detail/Geometry controls with numeric entry, white balance, rotation, numeric crop and compare-with-original. The website shells, shared models, and local Supabase infrastructure also exist. Local verification is documented in [Phase 05 verification](PHASE-05-VERIFICATION.md), [Phase 04 verification](PHASE-04-VERIFICATION.md) and the historical [foundation record](VERIFICATION.md). The code lives on `main` in the [Nathan-Olivier/NTO repository](https://github.com/Nathan-Olivier/NTO). A split that publishes Studio and the shared contracts separately as open source is proposed; see [open-source readiness](OPEN-SOURCE-READINESS.md).
 
 This does **not** mean the GDD's CORE product is complete. The full editing toolset, export workflow, authentication UI, sync, and publishing remain to be built. The Phase 04 edit renderer is now separate from Library/Cull original-preview decoding. The website currently uses optional development fixtures; it is not a deployed portfolio backed by real publications. Remote CI results must be checked separately from the recorded local results.
 
@@ -45,9 +45,9 @@ This does **not** mean the GDD's CORE product is complete. The full editing tool
 | 02 | Safe import and Library | Real photographs can be imported and browsed | Implemented; locally verified |
 | 03 | Organisation, metadata, and culling | A shoot can become a reliable final selection | Implemented; locally verified |
 | 04 | Rendering and edit-state engine | Originals and recipes produce consistent images | Implemented; locally verified with limits |
-| 05 | Core editing experience | A photograph can be edited safely and precisely | Planned |
-| 06 | Presets and batch edits | Editing scales to an event-sized selection | Planned |
-| 07 | Export | Finished photographs can be delivered to disk | Planned |
+| 05 | Core editing experience | A photograph can be edited safely and precisely | Implemented; locally verified, live UI checks open |
+| 06 | Presets and batch edits | Editing scales to an event-sized selection | Implemented; locally verified, live UI checks open |
+| 07 | Export | Finished photographs can be delivered to disk | Implemented; locally verified, manual viewer check open |
 | 08 | Cloud authentication, assets, and sync | Studio can transfer work safely and recover offline | Planned |
 | 09 | Renditions and protected delivery | Cloud can serve appropriate images securely | Planned |
 | 10 | Studio publishing and Gallery | A selection becomes a working client gallery | Planned |
@@ -75,7 +75,7 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 - [x] Generate Swift constants and CSS variables from canonical design tokens.
 - [x] Add initial Cloud migrations, ownership policies, private storage, project create/read adapters, and health/error foundations.
 - [x] Run local native, web, contract, and database checks; provide CI definitions and deployment preparation.
-- [x] Upload the foundation project to the private GitHub repository.
+- [x] Upload the foundation project to the GitHub repository.
 
 **Exit gate:** both applications run, local projects survive relaunch, contracts are compatible, and local Cloud access controls pass verification. Completed components are foundations; their corresponding GDD features still require validation with real photographs and complete workflows.
 
@@ -112,7 +112,7 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 - [x] Support appropriate metadata edits across a selection.
 - [x] Add filtering by rating, flag, camera, date, and media type, plus metadata/project search and sorting.
 - [x] Persist filters and scroll position per project without destroying valid selection.
-- [x] Implement keyboard-first Cull: arrows, 1-5 ratings, P pick, X reject, F favourite, and Space for 100% inspection.
+- [x] Implement keyboard-first Cull: arrows, 0-5 ratings, P pick, X reject, U clear flag, F favourite, and Space for 100% inspection.
 - [x] Preload neighbouring previews in both directions and keep rating writes independent of rendering.
 - [x] Provide an optional filmstrip and verify Focus Mode with actual photos.
 
@@ -147,15 +147,17 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 
 **Depends on:** Phase 04.
 
-- [ ] Build progressively disclosed Light, Colour, Detail, and Geometry controls with numeric entry, reset, and fine adjustment where appropriate.
-- [ ] Implement Exposure, Brilliance, Contrast, Highlights, Shadows, Whites, and Blacks, including group reset.
-- [ ] Implement Temperature, Tint, Vibrance, Saturation, and a white-balance eyedropper with preview and as-shot RAW reset.
-- [ ] Implement sharpening and noise reduction with 100% inspection and refinement after expensive interactions.
-- [ ] Implement free/aspect-ratio crop, 90-degree rotation, straightening, and temporary guides. Store normalized crop coordinates.
-- [ ] Make Escape cancel a crop interaction and Enter commit it; keep geometry editable later.
-- [ ] Connect every committed edit to undo/redo and recipe autosave.
-- [ ] Add hold-to-view-original comparison using cached previews; restore the edited view on release without changing its recipe.
+- [x] Build progressively disclosed Light, Colour, Detail, and Geometry controls with numeric entry, reset, and fine adjustment where appropriate.
+- [x] Implement Exposure, Brilliance, Contrast, Highlights, Shadows, Whites, and Blacks, including group reset. *All but Brilliance, which the Studio v0.1 reconciliation defers.*
+- [x] Implement Temperature, Tint, Vibrance, Saturation, and a white-balance eyedropper with preview and as-shot RAW reset. *RAW eyedropper path awaits a real-file check.*
+- [x] Implement sharpening and noise reduction with 100% inspection and refinement after expensive interactions. *100% re-renders the full image on each change; no separate refinement pass.*
+- [x] Implement free/aspect-ratio crop, 90-degree rotation, straightening, and temporary guides. Store normalized crop coordinates. *Straightening is the rotation slider with numeric entry; thirds guides show while dragging the crop.*
+- [x] Make Escape cancel a crop interaction and Enter commit it; keep geometry editable later.
+- [x] Connect every committed edit to undo/redo and recipe autosave.
+- [x] Add hold-to-view-original comparison using cached previews; restore the edited view on release without changing its recipe.
 - [ ] Verify Focus Mode, resizing, keyboard access, and photograph-first layout throughout editing.
+
+**Verification so far:** [Phase 05 verification](PHASE-05-VERIFICATION.md).
 
 **Exit gate:** a real RAW or JPEG can be corrected, cropped, compared, undone/redone, closed, and reopened with the same state. Preview and full-resolution render remain meaningfully consistent, with no unexpected clipping or neutral-value artifacts.
 
@@ -167,13 +169,15 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 
 **Depends on:** stable individual edit operations and history from Phase 05.
 
-- [ ] Store presets as selected recipe fields with visual previews before application.
-- [ ] Allow preset creation with explicit inclusion/exclusion of parameters such as crop and white balance.
-- [ ] Make preset application transparent and undoable; deleting a preset must not alter existing edits.
-- [ ] Implement copy/paste edits and parameter-selective batch synchronization.
-- [ ] Run batch operations in the background with progress and a defined undo/revert strategy.
+- [x] Store presets as selected recipe fields with visual previews before application.
+- [x] Allow preset creation with explicit inclusion/exclusion of parameters such as crop and white balance.
+- [x] Make preset application transparent and undoable; deleting a preset must not alter existing edits.
+- [x] Implement copy/paste edits and parameter-selective batch synchronization.
+- [x] Run batch operations in the background with progress and a defined undo/revert strategy.
 
 **Exit gate:** apply selected parameters to 100 images without blocking Studio, preserving excluded values and supporting recovery from unwanted changes.
+
+**Verification:** [Phase 06 verification](PHASE-06-VERIFICATION.md); format in [PRESETS.md](PRESETS.md). Live UI checks remain open.
 
 **Terminology:** synchronizing edits across photos is distinct from synchronizing data with Cloud in Phase 08.
 
@@ -185,15 +189,17 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 
 **Depends on:** Phases 04-06 for complete selection and recipe behavior.
 
-- [ ] Export individual selections, projects, and collections through a background queue.
-- [ ] Support JPEG/TIFF, quality, target dimensions, colour profile, metadata policy, and filename templates.
-- [ ] Render at source resolution unless resizing is requested.
-- [ ] Define explicit existing-file conflict behavior; show progress and actionable per-item failures.
-- [ ] Verify results in applications outside NTO and compare them with the editing preview.
+- [x] Export individual selections, projects, and collections through a background queue. *Selection-based; filter and Select All covers a project or collection.*
+- [x] Support JPEG/TIFF, quality, target dimensions, colour profile, metadata policy, and filename templates. *sRGB is the only profile.*
+- [x] Render at source resolution unless resizing is requested.
+- [x] Define explicit existing-file conflict behavior; show progress and actionable per-item failures.
+- [ ] Verify results in applications outside NTO and compare them with the editing preview. *Automated: exported pixels equal the engine output and decode with ImageIO; a manual check in a non-Apple viewer remains.*
 
 **Exit gate:** exported files open correctly and match requested dimensions, naming, profile, and metadata policy. Studio remains responsive, and originals remain unchanged.
 
-**Product checkpoint:** Studio now supports the first complete local workflow: **import → organise → cull → edit → export**.
+**Verification:** [Phase 07 verification](PHASE-07-VERIFICATION.md).
+
+**Product checkpoint:** Studio now supports the first complete local workflow in code: **import → organise → cull → edit → export**. Real-shoot validation (release stage 2) is the next gate.
 
 ## Phase 08 - Cloud authentication, assets, and sync
 
@@ -393,6 +399,6 @@ Every numbered GDD feature has a place in this roadmap. Repeated phase numbers i
 
 ## Using this roadmap
 
-For the next separately requested implementation, continue with Phase 03 after resolving any reported Mac reliability problems. Use the Studio-first release sequence above to decide when hosted and future-platform phases begin. For each phase, turn the unchecked tasks into bounded implementation requests, validate its exit gate, then record completion evidence before advancing the status table. Update this roadmap when product decisions change; do not silently reinterpret deferred features as CORE.
+The next step is not a build phase: perform the live UI verification recorded as open in the Phase 05 to 07 records, qualify the owner's CR3 files and the RAW eyedropper, and process a real shoot end to end (release stage 2), fixing what that reveals. Cloud (Phase 08) starts only after that gate. [STATUS.md](STATUS.md) lists what is implemented and what remains. Use the Studio-first release sequence above to decide when hosted and future-platform phases begin. For each phase, turn the unchecked tasks into bounded implementation requests, validate its exit gate, then record completion evidence before advancing the status table. Update this roadmap when product decisions change; do not silently reinterpret deferred features as CORE.
 
 Related documents: [Product](PRODUCT.md), [Architecture](ARCHITECTURE.md), [Design system](DESIGN-SYSTEM.md), [Setup](SETUP.md), and [Verification](VERIFICATION.md).

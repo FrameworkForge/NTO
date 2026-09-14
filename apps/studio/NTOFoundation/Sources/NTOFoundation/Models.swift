@@ -164,7 +164,12 @@ public struct EditRecipe: Codable, Equatable, Sendable {
     public var noiseReduction: Double
     public var crop: EditRecipeCrop
     public var rotation: Double
-    public init(schemaVersion: Int, assetId: UUID, revision: Int, exposure: Double, contrast: Double, saturation: Double, temperature: Double?, tint: Double, sharpness: Double, noiseReduction: Double, crop: EditRecipeCrop, rotation: Double) {
+    public var highlights: Double
+    public var shadows: Double
+    public var whites: Double
+    public var blacks: Double
+    public var vibrance: Double
+    public init(schemaVersion: Int, assetId: UUID, revision: Int, exposure: Double, contrast: Double, saturation: Double, temperature: Double?, tint: Double, sharpness: Double, noiseReduction: Double, crop: EditRecipeCrop, rotation: Double, highlights: Double, shadows: Double, whites: Double, blacks: Double, vibrance: Double) {
         self.schemaVersion = schemaVersion
         self.assetId = assetId
         self.revision = revision
@@ -177,8 +182,13 @@ public struct EditRecipe: Codable, Equatable, Sendable {
         self.noiseReduction = noiseReduction
         self.crop = crop
         self.rotation = rotation
+        self.highlights = highlights
+        self.shadows = shadows
+        self.whites = whites
+        self.blacks = blacks
+        self.vibrance = vibrance
     }
-    enum CodingKeys: String, CodingKey { case schemaVersion, assetId, revision, exposure, contrast, saturation, temperature, tint, sharpness, noiseReduction, crop, rotation }
+    enum CodingKeys: String, CodingKey { case schemaVersion, assetId, revision, exposure, contrast, saturation, temperature, tint, sharpness, noiseReduction, crop, rotation, highlights, shadows, whites, blacks, vibrance }
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         schemaVersion = try c.decode(Int.self, forKey: .schemaVersion)
@@ -194,6 +204,11 @@ public struct EditRecipe: Codable, Equatable, Sendable {
         noiseReduction = try c.decode(Double.self, forKey: .noiseReduction)
         crop = try c.decode(EditRecipeCrop.self, forKey: .crop)
         rotation = try c.decode(Double.self, forKey: .rotation)
+        highlights = try c.decodeIfPresent(Double.self, forKey: .highlights) ?? 0
+        shadows = try c.decodeIfPresent(Double.self, forKey: .shadows) ?? 0
+        whites = try c.decodeIfPresent(Double.self, forKey: .whites) ?? 0
+        blacks = try c.decodeIfPresent(Double.self, forKey: .blacks) ?? 0
+        vibrance = try c.decodeIfPresent(Double.self, forKey: .vibrance) ?? 0
         try validate()
     }
     public func encode(to encoder: Encoder) throws {
@@ -210,6 +225,11 @@ public struct EditRecipe: Codable, Equatable, Sendable {
         try c.encode(noiseReduction, forKey: .noiseReduction)
         try c.encode(crop, forKey: .crop)
         try c.encode(rotation, forKey: .rotation)
+        try c.encode(highlights, forKey: .highlights)
+        try c.encode(shadows, forKey: .shadows)
+        try c.encode(whites, forKey: .whites)
+        try c.encode(blacks, forKey: .blacks)
+        try c.encode(vibrance, forKey: .vibrance)
     }
 }
 

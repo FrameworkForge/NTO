@@ -14,9 +14,12 @@ public struct OriginalReference: Sendable {
 public struct RenderSpecification: Codable, Hashable, Sendable {
   public let maxDimension: Int
   public let format: String
-  public init(maxDimension: Int, format: String) {
+  /// JPEG compression quality 0.1…1. Ignored by lossless formats.
+  public let quality: Double
+  public init(maxDimension: Int, format: String, quality: Double = 0.95) {
     self.maxDimension = maxDimension
     self.format = format
+    self.quality = quality
   }
 }
 public struct RenderedResult: Sendable {
@@ -38,7 +41,7 @@ public enum RenderFailure: LocalizedError {
   public var errorDescription: String? {
     switch self {
     case .invalidRecipe: "This edit recipe contains invalid or out-of-range values."
-    case .invalidOutput: "Choose JPEG, PNG or TIFF and a maximum dimension between 1 and 30,000 pixels."
+    case .invalidOutput: "Choose JPEG, PNG or TIFF, a maximum dimension between 1 and 30,000 pixels, and a JPEG quality between 0.1 and 1."
     case .assetMismatch: "This recipe belongs to a different photograph."
     case .missingOriginal: "The original is unavailable. Reconnect its drive or use Locate original in the inspector, then retry."
     case .changedOriginal: "The original's contents have changed. Locate the original matching this photograph before rendering."

@@ -27,7 +27,9 @@
       "id": "44444444-4444-4444-8444-444444444444",
       "projectId": "22222222-2222-4222-8222-222222222222",
       "title": "First selection",
-      "assetIds": ["33333333-3333-4333-8333-333333333333"]
+      "assetIds": [
+        "33333333-3333-4333-8333-333333333333"
+      ]
     }
   ],
   "recipes": [
@@ -67,7 +69,12 @@
         "width": 0.6,
         "height": 0.5
       },
-      "rotation": 90
+      "rotation": 90,
+      "highlights": -0.3,
+      "shadows": 0.4,
+      "whites": 0.1,
+      "blacks": -0.2,
+      "vibrance": 0.5
     }
   ],
   "renditions": [
@@ -93,7 +100,9 @@
       "status": "draft",
       "visibility": "public",
       "downloads": "none",
-      "assetIds": ["33333333-3333-4333-8333-333333333333"],
+      "assetIds": [
+        "33333333-3333-4333-8333-333333333333"
+      ],
       "coverAssetId": "33333333-3333-4333-8333-333333333333",
       "revision": 1
     }

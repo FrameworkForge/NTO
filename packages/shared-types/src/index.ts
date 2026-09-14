@@ -37,6 +37,12 @@ export interface EditRecipe {
   noiseReduction: number;
   crop: { x: number; y: number; width: number; height: number };
   rotation: number;
+  /** Tonal range and vibrance (−1…1) were added in Phase 05 with a schema default of 0; absent means neutral in recipes saved earlier. */
+  highlights?: number;
+  shadows?: number;
+  whites?: number;
+  blacks?: number;
+  vibrance?: number;
 }
 export interface Rendition {
   id: UUID;
@@ -106,12 +112,18 @@ export function validateRecipe(recipe: EditRecipe): void {
     sharpness: [0, 2],
     noiseReduction: [0, 1],
     rotation: [-180, 180],
+    highlights: [-1, 1],
+    shadows: [-1, 1],
+    whites: [-1, 1],
+    blacks: [-1, 1],
+    vibrance: [-1, 1],
   } as const;
   if (!Number.isSafeInteger(recipe.revision) || recipe.revision < 1)
     throw new Error("Invalid recipe revision");
   for (const key of Object.keys(ranges) as (keyof typeof ranges)[]) {
     const [min, max] = ranges[key];
-    if (!Number.isFinite(recipe[key]) || recipe[key] < min || recipe[key] > max)
+    const value = recipe[key] ?? 0;
+    if (!Number.isFinite(value) || value < min || value > max)
       throw new Error(`Invalid recipe ${key}`);
   }
   if (

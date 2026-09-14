@@ -20,6 +20,7 @@ public enum StudioMode: String, CaseIterable, Identifiable, Sendable {
   public var mode: StudioMode = .library
   public var newProjectRequested = false
   public var importRequested = false
+  public var exportRequested = false
   public var selectedProjectID: UUID?
   public var selectedAssetID: UUID?
   public var sidebarVisible = true

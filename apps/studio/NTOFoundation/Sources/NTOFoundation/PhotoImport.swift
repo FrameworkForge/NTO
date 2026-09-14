@@ -35,6 +35,7 @@ public struct LibraryLocations: Sendable {
   public let root: URL
   public var originals: URL { root.appendingPathComponent("Originals", isDirectory: true) }
   public var cache: URL { root.appendingPathComponent("PreviewCache", isDirectory: true) }
+  public var presets: URL { root.appendingPathComponent("Presets", isDirectory: true) }
   public init(root: URL) { self.root = root }
   public static func standard() throws -> Self {
     let support = try FileManager.default.url(for: .applicationSupportDirectory,
