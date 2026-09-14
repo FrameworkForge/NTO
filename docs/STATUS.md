@@ -34,8 +34,8 @@ Automated coverage: 49 Swift tests (47 behavioural, 2 opt-in fixture generators)
 
 ### Web (nto.motion shells)
 
-- Next.js 16 portfolio, project-story and gallery routes with editorial layout, skip link, visible focus, reduced-motion handling, explicit empty/error/not-found states.
-- Fixture artwork opt-in via `NTO_DEMO=1`; keyboard-accessible modal viewer with arrow navigation, Escape, and focus return.
+- Next.js 16 portfolio, project-story and gallery routes in the cinematic layout from the design import ([WEB-SITE-DESIGN.md](WEB-SITE-DESIGN.md)): fixed blended header, full-viewport hero, marquee, sticky project sequence, Studio pipeline with truthful states, closing section; skip link, visible focus, reduced-motion handling, explicit empty/error/not-found states.
+- Fixture artwork opt-in via `NTO_DEMO=1`; immersive viewer with index rail, click zones, caption, progress bar, arrow navigation, Escape, and focus return.
 - Playwright desktop and mobile smoke tests; ESLint; production build; Vercel configuration prepared.
 
 ### Cloud (local Supabase foundation)

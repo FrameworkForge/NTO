@@ -24,7 +24,8 @@ export default function RootLayout({
           </Link>
           <nav aria-label="Main navigation">
             <Link href="/#work">Selected work</Link>
-            <span className="identity">Photography & motion</span>
+            <Link href="/#studio">Studio</Link>
+            <span className="identity">Photography &amp; motion</span>
           </nav>
         </header>
         {children}

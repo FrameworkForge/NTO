@@ -17,7 +17,7 @@ The O progress ring has an accessible text label. Reduced motion removes its rot
 
 ## Layout and fixtures
 
-The portfolio uses a large editorial introduction, dominant artwork, and a numbered project sequence. Gallery uses varied compositions rather than uniform cards. Studio follows the native macOS workspace shape described in [STUDIO-NATIVE-UI.md](STUDIO-NATIVE-UI.md): a split-view sidebar, a segmented mode picker in the toolbar, an inspector, and floating glass bars over the photograph rather than control rows beneath it. The window minimum is 700 × 500.
+The portfolio is cinematic: a full-viewport hero, a marquee, a sticky numbered project sequence and a Studio pipeline, recorded in [WEB-SITE-DESIGN.md](WEB-SITE-DESIGN.md). Gallery uses varied compositions rather than uniform cards and an immersive viewer. Studio follows the native macOS workspace shape described in [STUDIO-NATIVE-UI.md](STUDIO-NATIVE-UI.md): a split-view sidebar, a segmented mode picker in the toolbar, an inspector, and floating glass bars over the photograph rather than control rows beneath it. The window minimum is 700 × 500.
 
 Bundled SVG studies are deterministic abstract development artwork, labelled accordingly. They are not the user's photographs, commissioned brand assets, or published projects. Web fixtures require `NTO_DEMO=1`; Studio fixtures require an explicit toggle/launch flag.
 

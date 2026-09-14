@@ -104,6 +104,8 @@ pnpm workspace: `apps/web`, `packages/*`, `services/cloud`. Studio is not an npm
 
 **Cloud access model.** Every table has `owner_id`, RLS `auth.uid() = owner_id`, composite FKs `(id, owner_id)` so relations cannot cross owners, and no anon grants. Buckets `originals`/`renditions` are private with owner-UUID-prefixed keys and no client update/delete policy. Clients get only the publishable key plus a user token; the service-role key is used solely by `tests/integration.test.ts`, which also guards against non-local URLs. Public web routes serve fixtures only; nothing reads the database yet.
 
+**Web layout.** The landing, story and gallery follow `docs/WEB-SITE-DESIGN.md`; its deliberate deviations (one real project, no custom cursor, no fabricated metadata or downloads) are product decisions, keep them. `lib/content.ts` is the data model (`projects()`, `pipeline`); styles live in `components/experience.module.css` and use token variables only.
+
 **Web demo gating.** Fixture content renders only when `NTO_DEMO=1` at both build and run time (the landing page is prerendered). Routes call `notFound()` otherwise. Demo data comes from `@nto/shared-types/fixtures`; artwork is the three abstract SVGs under `public/fixtures`, always labelled as development studies.
 
 ## Working rules specific to this repo
