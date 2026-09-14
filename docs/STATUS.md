@@ -10,7 +10,7 @@ Status is **local verification on Apple silicon**. GitHub Actions runs on push: 
 
 | Area | Working today | Evidence |
 | --- | --- | --- |
-| Shell | Library, Cull, Edit, Publish modes (Cmd-1 to Cmd-4); sidebar/inspector toggles; reversible Focus Mode (Tab); selection retained across modes; single workspace window; explicit startup failure state | [Phase 01](VERIFICATION.md) |
+| Shell | Native split view: sidebar of projects and collections, segmented mode picker in the toolbar (Cmd-1 to Cmd-4), inspector with Info or Adjustments, floating glass bars in Cull and Edit, reversible Focus Mode (Tab); selection retained across modes; single workspace window; explicit startup failure state; Publish is an honest draft form | [Phase 01](VERIFICATION.md), [Native UI](STUDIO-NATIVE-UI.md) |
 | Projects | Create, rename, cover, creation date, photo count, name search; persisted with SwiftData at `~/Library/Application Support/NTO/Studio`; last project restored on launch | Phase 01, [Phase 03](PHASE-03-VERIFICATION.md) |
 | Import | Files, folders, and drag/drop; copy or reference storage; default caption; SHA-256 duplicate detection; one local identity shared across projects; JPEG/HEIC/TIFF and system-supported RAW; ImageIO metadata; cancellable background import with per-file report; crash recovery of partial copies | [Phase 02](PHASE-02-VERIFICATION.md) |
 | Library | Lazy thumbnail grid with density control; click/Shift/Command/range selection, Cmd-A, arrows, Return to preview; bounded memory and disk preview caches; viewport prefetch; per-project selection, active photo, scroll anchor and density; 10,000-record synthetic library opens in about one second | Phase 02 |
@@ -24,7 +24,7 @@ Status is **local verification on Apple silicon**. GitHub Actions runs on push: 
 | Export | Shift-Cmd-E or the header button exports the selection: JPEG with quality or TIFF, original size or fit longest edge, filename templates with a live example, metadata policy (none, caption and keywords, camera data) with location opt-in, skip/keep both/replace, background queue with progress, Stop, per-file failures and Show in Finder; settings persist | [Phase 07](PHASE-07-VERIFICATION.md) |
 | Verified files | Generated JPEG/HEIC/TIFF fixtures in tests; one owner Canon EOS 5D Mark IV CR2 developed at neutral settings | Phase 02, Phase 04 |
 
-Automated coverage: 48 Swift tests (46 behavioural, 2 opt-in fixture generators), unsigned Debug build via `xcodebuild`.
+Automated coverage: 49 Swift tests (47 behavioural, 2 opt-in fixture generators), unsigned Debug build via `xcodebuild`.
 
 ### Shared contracts and tokens
 
@@ -69,7 +69,7 @@ Automated coverage: 48 Swift tests (46 behavioural, 2 opt-in fixture generators)
 - [x] Interactive crop tool with aspect presets, thirds guides, Return to commit and Escape to cancel.
 - [x] 100% inspection of the edited result inside Edit.
 - [ ] Brilliance (deferred by the v0.1 reconciliation); a straighten guide on the image.
-- [ ] Live UI verification of the tools, Focus Mode and window sizes with real photographs; the RAW eyedropper on a real camera file; manual pointer-drag acceptance open since Phase 04.
+- [ ] Live UI verification of the tools, Focus Mode and window sizes with real photographs; the RAW eyedropper on a real camera file; manual pointer-drag acceptance open since Phase 04; the native workspace layout ([STUDIO-NATIVE-UI.md](STUDIO-NATIVE-UI.md)) against real photographs.
 
 ### Phase 06: presets and batch (implemented)
 

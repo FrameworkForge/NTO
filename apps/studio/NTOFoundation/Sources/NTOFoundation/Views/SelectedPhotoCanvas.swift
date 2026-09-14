@@ -15,15 +15,11 @@ public struct SelectedPhotoCanvas: View {
     } else if mode == .cull {
       CullWorkspace(library: library, isFocused: isFocused)
     } else if let photo = library.activePhoto {
-      VStack(spacing: 12) {
+      ZStack {
+        Color.black
         PhotoThumbnail(photo: photo, previews: library.previews, size: 2000)
-          .accessibilityElement(children: .contain).accessibilityLabel(photo.filename).padding(isFocused ? 0 : 20)
-        if !isFocused {
-          Text(photo.filename).font(.caption)
-          Text("Original preview · Cloud publishing is not connected yet")
-            .font(.caption).foregroundStyle(.secondary).padding(.bottom, 16)
-        }
-      }
+          .accessibilityElement(children: .contain).accessibilityLabel(photo.filename).padding(isFocused ? 0 : 24)
+      }.overlay(alignment: .topLeading) { Text(photo.filename).font(.caption).foregroundStyle(.secondary).padding(14) }
     } else {
       ContentUnavailableView("Select a photograph", systemImage: "photo",
         description: Text("Choose a photograph in Library. Your selection is kept when you change modes."))

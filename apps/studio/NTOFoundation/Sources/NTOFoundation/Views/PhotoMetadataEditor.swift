@@ -9,9 +9,7 @@ struct PhotoMetadataEditor: View {
   @State private var applyToSelection = false
   var body: some View {
     VStack(alignment: .leading, spacing: 8) {
-      PhotoRatingControls(library: library)
-      if !photo.keywords.isEmpty { Text(photo.keywords.joined(separator: ", ")).font(.caption) }
-      Button("Edit caption and keywords…") {
+      Button("Edit Caption and Keywords…") {
         caption = photo.caption; keywords = photo.keywords.joined(separator: ", "); applyToSelection = false; editing = true
       }
     }.sheet(isPresented: $editing) {
