@@ -42,6 +42,9 @@ import SwiftUI
         Button("Import Photographs…") { workspace.importRequested.toggle() }
           .keyboardShortcut("i", modifiers: [.command, .shift])
           .disabled(library?.isImporting != false)
+        Button("Export…") { workspace.exportRequested.toggle() }
+          .keyboardShortcut("e", modifiers: [.command, .shift])
+          .disabled(library?.exporter.isRunning != false)
       }
       CommandGroup(replacing: .undoRedo) {
         Button("Undo") {

@@ -21,7 +21,8 @@ public actor CoreImageRenderer: PhotoRenderer {
   public func render(original: OriginalReference, recipe: EditRecipe, output: RenderSpecification) async throws -> RenderedResult {
     try Task.checkCancellation(); try recipe.validate()
     guard original.assetID == recipe.assetId else { throw RenderFailure.assetMismatch }
-    guard (1...30_000).contains(output.maxDimension), ["jpeg", "png", "tiff"].contains(output.format) else { throw RenderFailure.invalidOutput }
+    guard (1...30_000).contains(output.maxDimension), ["jpeg", "png", "tiff"].contains(output.format),
+      output.quality.isFinite, (0.1...1).contains(output.quality) else { throw RenderFailure.invalidOutput }
     return try autoreleasepool {
       let url: URL
       if let bookmark = original.bookmark {
@@ -54,7 +55,7 @@ public actor CoreImageRenderer: PhotoRenderer {
       let data = NSMutableData()
       let type = output.format == "jpeg" ? UTType.jpeg : output.format == "tiff" ? UTType.tiff : UTType.png
       guard let target = CGImageDestinationCreateWithData(data, type.identifier as CFString, 1, nil) else { throw RenderFailure.encode }
-      CGImageDestinationAddImage(target, rendered, [kCGImageDestinationLossyCompressionQuality: 0.95,
+      CGImageDestinationAddImage(target, rendered, [kCGImageDestinationLossyCompressionQuality: output.quality,
         kCGImagePropertyOrientation: 1] as CFDictionary)
       guard CGImageDestinationFinalize(target) else { throw RenderFailure.encode }
       try Task.checkCancellation()
@@ -97,12 +98,27 @@ public actor CoreImageRenderer: PhotoRenderer {
     // Tone. Contrast is a signed offset from the neutral factor of 1.
     image = image.applyingFilter("CIExposureAdjust", parameters: [kCIInputEVKey: recipe.exposure])
     image = image.applyingFilter("CIColorControls", parameters: [kCIInputContrastKey: 1 + recipe.contrast, kCIInputSaturationKey: 1])
+    // Tonal range: a five-point curve in sRGB-encoded tone with a pinned midtone (see RENDERING.md).
+    if recipe.highlights != 0 || recipe.shadows != 0 || recipe.whites != 0 || recipe.blacks != 0 {
+      let points = [
+        CIVector(x: max(0, -0.15 * recipe.blacks), y: max(0, 0.15 * recipe.blacks)),
+        CIVector(x: 0.25, y: 0.25 + 0.10 * recipe.shadows),
+        CIVector(x: 0.5, y: 0.5),
+        CIVector(x: 0.75, y: 0.75 + 0.10 * recipe.highlights),
+        CIVector(x: 1 - max(0, 0.15 * recipe.whites), y: 1 - max(0, -0.15 * recipe.whites))
+      ]
+      image = image.applyingFilter("CIToneCurve", parameters: ["inputPoint0": points[0], "inputPoint1": points[1],
+        "inputPoint2": points[2], "inputPoint3": points[3], "inputPoint4": points[4]])
+    }
     // Colour. RAW uses camera white balance; raster intent is relative to D65.
     if !type.conforms(to: .rawImage), recipe.temperature != nil || recipe.tint != 0 {
       image = image.applyingFilter("CITemperatureAndTint", parameters: [
         "inputNeutral": CIVector(x: recipe.temperature ?? 6500, y: recipe.tint),
         "inputTargetNeutral": CIVector(x: 6500, y: 0)
       ])
+    }
+    if recipe.vibrance != 0 {
+      image = image.applyingFilter("CIVibrance", parameters: ["inputAmount": recipe.vibrance])
     }
     image = image.applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: recipe.saturation, kCIInputContrastKey: 1])
     // Detail is computed at original resolution, never at preview-dependent radii.

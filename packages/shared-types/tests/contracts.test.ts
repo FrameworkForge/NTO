@@ -52,3 +52,19 @@ test("render recipes have matching bounded semantics and normalized crops", asyn
   invalid.recipes[0].exposure = 6;
   assert.equal(validate(invalid), false);
 });
+
+test("tonal range and vibrance default to neutral for recipes saved before Phase 05", async () => {
+  const { validateRecipe } = await import("../src/index");
+  const legacy = fixture.recipes[0] as EcosystemFixture["recipes"][number];
+  assert.equal(legacy.highlights, undefined);
+  validateRecipe(legacy);
+  const edited = fixture.recipes[1] as EcosystemFixture["recipes"][number];
+  assert.equal(edited.vibrance, 0.5);
+  const tooVibrant = structuredClone(fixture);
+  tooVibrant.recipes[1].vibrance = 1.5;
+  assert.equal(validate(tooVibrant), false);
+  assert.throws(
+    () => validateRecipe(tooVibrant.recipes[1] as EcosystemFixture["recipes"][number]),
+    /vibrance/,
+  );
+});

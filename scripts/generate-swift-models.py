@@ -27,7 +27,10 @@ def struct(name,spec):
  lines += ['    enum CodingKeys: String, CodingKey { case '+', '.join(f for f,t in fields)+' }','    public init(from decoder: Decoder) throws {','        let c = try decoder.container(keyedBy: CodingKeys.self)']
  for f,t in fields:
   decode_type='Optional<'+t[:-1]+'>' if t.endswith('?') else t
-  lines += ['        '+f+' = try c.decode('+decode_type+'.self, forKey: .'+f+')']
+  if 'default' in spec['properties'][f]:
+   lines += ['        '+f+' = try c.decodeIfPresent('+decode_type+'.self, forKey: .'+f+') ?? '+json.dumps(spec['properties'][f]['default'])]
+  else:
+   lines += ['        '+f+' = try c.decode('+decode_type+'.self, forKey: .'+f+')']
   if f in versions:lines += ['        guard '+f+' == 1 else { throw ContractError.unsupportedVersion('+f+') }']
  if name == 'EditRecipe': lines += ['        try validate()']
  lines += ['    }','    public func encode(to encoder: Encoder) throws {','        var c = encoder.container(keyedBy: CodingKeys.self)']

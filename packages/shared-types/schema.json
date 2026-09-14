@@ -74,7 +74,12 @@
           "format": "date-time"
         }
       },
-      "required": ["id", "ownerId", "title", "createdAt"],
+      "required": [
+        "id",
+        "ownerId",
+        "title",
+        "createdAt"
+      ],
       "additionalProperties": false
     },
     "Asset": {
@@ -120,7 +125,11 @@
         },
         "flag": {
           "type": "string",
-          "enum": ["none", "pick", "reject"]
+          "enum": [
+            "none",
+            "pick",
+            "reject"
+          ]
         },
         "favourite": {
           "type": "boolean"
@@ -162,7 +171,12 @@
           }
         }
       },
-      "required": ["id", "projectId", "title", "assetIds"],
+      "required": [
+        "id",
+        "projectId",
+        "title",
+        "assetIds"
+      ],
       "additionalProperties": false
     },
     "EditRecipe": {
@@ -246,13 +260,48 @@
               "exclusiveMinimum": 0
             }
           },
-          "required": ["x", "y", "width", "height"],
+          "required": [
+            "x",
+            "y",
+            "width",
+            "height"
+          ],
           "additionalProperties": false
         },
         "rotation": {
           "type": "number",
           "minimum": -180,
           "maximum": 180
+        },
+        "highlights": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "default": 0
+        },
+        "shadows": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "default": 0
+        },
+        "whites": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "default": 0
+        },
+        "blacks": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "default": 0
+        },
+        "vibrance": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "default": 0
         }
       },
       "required": [
@@ -288,7 +337,13 @@
         },
         "kind": {
           "type": "string",
-          "enum": ["thumbnail", "preview", "web", "master", "export"]
+          "enum": [
+            "thumbnail",
+            "preview",
+            "web",
+            "master",
+            "export"
+          ]
         },
         "objectKey": {
           "type": "string"
@@ -334,7 +389,10 @@
         },
         "destination": {
           "type": "string",
-          "enum": ["gallery", "portfolio"]
+          "enum": [
+            "gallery",
+            "portfolio"
+          ]
         },
         "title": {
           "type": "string"
@@ -344,15 +402,26 @@
         },
         "status": {
           "type": "string",
-          "enum": ["draft", "published"]
+          "enum": [
+            "draft",
+            "published"
+          ]
         },
         "visibility": {
           "type": "string",
-          "enum": ["public", "unlisted", "password"]
+          "enum": [
+            "public",
+            "unlisted",
+            "password"
+          ]
         },
         "downloads": {
           "type": "string",
-          "enum": ["none", "web", "master"]
+          "enum": [
+            "none",
+            "web",
+            "master"
+          ]
         },
         "assetIds": {
           "type": "array",

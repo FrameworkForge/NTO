@@ -19,6 +19,9 @@ import Observation
   public var errorMessage: String?
   public let editor: EditController
   public let previews: PhotoPreviews
+  public let presets: PresetStore
+  public let batch: BatchEditController
+  public let exporter: ExportController
   private let store: ProjectStore
   private let worker: PhotoImportWorker
   private var importTask: Task<Void, Never>?
@@ -26,9 +29,49 @@ import Observation
   private var saveTask: Task<Void, Never>?
   private var recoveryFinished = false
   public init(store: ProjectStore, locations: LibraryLocations) {
-    editor = EditController(store: store, locations: locations)
-    self.store = store; worker = PhotoImportWorker(locations: locations)
     previews = PhotoPreviews(locations: locations)
+    editor = EditController(store: store, locations: locations, previews: previews)
+    self.store = store; worker = PhotoImportWorker(locations: locations)
+    presets = PresetStore(directory: locations.presets)
+    batch = BatchEditController(store: store)
+    exporter = ExportController(store: store, locations: locations)
+  }
+
+  /// Exports the selected, visible photographs in their displayed order using their saved recipes.
+  public func export(_ specification: ExportSpecification, to destination: URL, projectTitle: String) {
+    editor.finishGesture()
+    let selected = visiblePhotos.filter { actionableIDs.contains($0.id) }
+    exporter.start(specification, photos: selected, projectTitle: projectTitle, destination: destination)
+  }
+
+  /// Applies a parameter subset to the given photographs. The photograph open in Edit goes through the editor so its
+  /// in-memory history stays authoritative; every other photograph is updated in the background.
+  public func syncEdits(_ adjustments: RecipeAdjustments, to ids: Set<UUID>) {
+    guard !batch.isRunning, !adjustments.isEmpty else { return }
+    var targets = ids
+    var precommitted: [BatchEditController.Outcome] = []
+    if editor.isActive, let active = editor.photo?.id, targets.contains(active) {
+      let before = editor.history?.current.revision
+      editor.apply(adjustments)
+      if let after = editor.history?.current.revision, after != before {
+        precommitted.append(BatchEditController.Outcome(assetID: active, revision: after))
+      }
+      targets.remove(active)
+    }
+    let named = photos.filter { targets.contains($0.id) }.map { (id: $0.id, name: $0.filename) }
+    batch.sync(adjustments, to: named, precommitted: precommitted)
+  }
+  /// Reverts the last sync. The open photograph is undone through the editor when it is still at the synced revision.
+  @discardableResult public func revertLastSync() -> BatchEditController.RevertReport {
+    var handled: Set<UUID> = []
+    var report = BatchEditController.RevertReport()
+    if editor.isActive, let active = editor.photo?.id, let outcome = batch.lastOutcomes.first(where: { $0.assetID == active }) {
+      handled.insert(active)
+      if editor.history?.current.revision == outcome.revision { editor.undo(); report.reverted += 1 } else { report.skipped += 1 }
+    }
+    let rest = batch.revertLast(excluding: handled)
+    report.reverted += rest.reverted; report.skipped += rest.skipped; report.failures += rest.failures
+    return report
   }
   public var activePhoto: PhotoRecord? { photos.first { $0.id == browsing.activeID } }
 
