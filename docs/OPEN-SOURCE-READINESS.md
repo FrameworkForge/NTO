@@ -1,6 +1,6 @@
 # Open-source readiness
 
-Decision of 14 September 2026: **this repository stays private** and holds the whole ecosystem. **NTO Studio and the shared contracts will be published as a separate open-source repository** when the local workflow is validated. The web integration, Cloud services and operations remain private here and may be opened later on the owner's terms.
+Proposal of 14 September 2026, for the maintainer to accept or change: keep **this repository private** for the whole ecosystem and **publish NTO Studio and the shared contracts as a separate open-source repository** when the local workflow is validated. The web integration, Cloud services and operations would remain private here and could be opened later on the owner's terms. The community files in this repository (CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, TRADEMARKS, templates) are drafts for the same decision.
 
 This page tracks readiness for that public Studio repository. It refines the release gate in [ECOSYSTEM-STRATEGY.md](ECOSYSTEM-STRATEGY.md) and the owner's repository requirements (master context §28–33).
 
@@ -34,9 +34,9 @@ Studio is the client of the future Cloud, so its sign-in, upload and sync code w
 | Feature scope of the recommended v0.1 milestone (§28) exists in code | Done and locally verified (see [STATUS.md](STATUS.md)) |
 | Studio CI job on a valid hosted label (`macos-26`) | Runs on GitHub; the web and Cloud jobs pass. The Studio job failed once on a 10,000-record timing assertion that the hosted runner cannot meet; the budget is now environment-aware |
 
-## Owner decisions still required
+## Maintainer decisions still required
 
-1. **Make this repository private on GitHub.** It is currently public. The account signed in on the development Mac has no admin rights on it; use the owner account (repository Settings → Danger zone → Change visibility, or `gh repo edit Nathan-Olivier/NTO --visibility private --accept-visibility-change-consequences` after `gh auth login` as the owner). Note that the history already published includes the web shells and Cloud migrations; they contain no secrets.
+1. **Repository visibility.** It is currently public. Only the owner account can change it (repository Settings → Danger zone → Change visibility, or `gh repo edit Nathan-Olivier/NTO --visibility private --accept-visibility-change-consequences` after `gh auth login` as the owner). Note that the history already published includes the web shells and Cloud migrations; they contain no secrets.
 2. **Licence** for the public Studio repository. Add `LICENSE` there; MPL 2.0 is the candidate, with explicit approval and possibly legal review first.
 3. **Conduct contact.** Replace the placeholder in CODE_OF_CONDUCT.md.
 4. **Brand terms.** Confirm TRADEMARKS.md or replace it with formal terms.

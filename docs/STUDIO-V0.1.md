@@ -47,7 +47,7 @@ Existing local verification is a baseline, not a claim that all camera models or
 | RAW | Current Apple-native decoder/backend, verified per camera/file | Explicitly qualify Canon CR3; separate cross-platform RAW decoder later |
 | Rendering | Platform-neutral recipe intent behind the existing asynchronous boundary; Core Image/Metal as needed | Portable render graph with Metal on Apple and Vulkan elsewhere is the long-term preference |
 | Packaging | Keep existing native code working and testable | Extract portable Core/Catalog/Metadata/Recipe/Preset/Sync interfaces as useful; do not rewrite working code just to create named packages |
-| Distribution | Private development while workflows mature | Studio and shared contracts published in a separate open-source repository; web integration and Cloud stay private |
+| Distribution | Pre-release development while workflows mature | Proposed: Studio and shared contracts published in a separate open-source repository; web integration and Cloud stay private |
 | Revenue | No account/subscription gate on local editing/export | Optional managed hosting, storage, sync, Gallery, portfolio, commerce, and business services |
 
 Neither this document nor the master context changes the repository's visibility or license. MPL 2.0 is a candidate to investigate, not an adopted license.

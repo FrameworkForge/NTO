@@ -106,7 +106,7 @@ Automated coverage: 48 Swift tests (46 behavioural, 2 opt-in fixture generators)
 
 ### Open-source readiness
 
-Tracked in [OPEN-SOURCE-READINESS.md](OPEN-SOURCE-READINESS.md). Plan: this repository private; Studio plus shared contracts published as a separate open-source repository. CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, TRADEMARKS, templates and the content audit are done and carry over. Still the owner's: making this repository private on GitHub, the licence, the conduct contact, brand terms, DCO versus CLA, and the public repository's name and settings.
+Tracked in [OPEN-SOURCE-READINESS.md](OPEN-SOURCE-READINESS.md). Proposed to the maintainer: this repository private; Studio plus shared contracts published as a separate open-source repository. CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, TRADEMARKS, templates and the content audit are done and carry over. Still the maintainer's: repository visibility, the licence, the conduct contact, brand terms, DCO versus CLA, and the public repository's name and settings.
 
 ### Deployment (nothing hosted yet)
 

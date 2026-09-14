@@ -8,7 +8,7 @@ NTO is a photography ecosystem intended to become open source, built around **Sh
 
 Local import, organisation, editing, and export must remain usable without an account, subscription, or Cloud upload. Optional hosted Cloud, Gallery, Portfolio/nto.motion, Commerce, Mobile, and future platforms are the longer-term direction. Their existence in the docs does not mean they are implemented.
 
-This is the owner's **private** working repository for the whole ecosystem: Studio, the web shells, the Cloud foundations and the strategy documents. The plan is to publish **NTO Studio and the shared contracts as a separate open-source repository** once the local workflow is validated; the web integration, Cloud services and operations stay here. No licence has been adopted yet; MPL 2.0 is the candidate under review. See [open-source readiness](docs/OPEN-SOURCE-READINESS.md). Pricing and plan examples in the strategy documents are proposals, not offers.
+This repository holds the whole ecosystem: Studio, the web shells, the Cloud foundations and the strategy documents. **Proposed to the maintainer** (see [open-source readiness](docs/OPEN-SOURCE-READINESS.md)): keep this repository private and publish **NTO Studio and the shared contracts as a separate open-source repository** once the local workflow is validated, with the web integration, Cloud services and operations staying here. Until the maintainer decides, treat the repository as pre-release. No licence has been adopted yet; MPL 2.0 is the candidate under review. Pricing and plan examples in the strategy documents are proposals, not offers.
 
 ## Start here
 
@@ -81,4 +81,4 @@ No personal photographs, hosted resources, or production secrets are included in
 
 ## Contributing, security, names
 
-[CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) and [TRADEMARKS.md](TRADEMARKS.md) are written for the future public Studio repository and apply here in the meantime. Until a LICENSE file exists, all rights are reserved by the owner.
+[CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) and [TRADEMARKS.md](TRADEMARKS.md) are drafts for the maintainer's approval, written for the future public Studio repository. Until a LICENSE file exists, all rights are reserved by the owner.
