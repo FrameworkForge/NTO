@@ -6,7 +6,7 @@ Owner direction received 13 September 2026: incorporate the [master context](MAS
 
 A photographer can create a project, import real supported Canon photographs, browse and cull a shoot, edit a selection, close Studio, reopen with the correct edits, and export JPEGs. Originals remain unchanged. This works without an account, subscription, internet connection, or Cloud upload.
 
-Current verified baseline: project persistence, photo import, Library browsing/selection, metadata display, original previews, reference recovery, collections, editable metadata and keyboard culling. See [Phase 02 verification](PHASE-02-VERIFICATION.md) and [Phase 03 verification](PHASE-03-VERIFICATION.md). Cull has working controls. Edit now has the Phase 04 renderer, saved recipes, undo/redo and exposure/contrast/saturation controls; Publish remains a preview shell. See [Phase 04 verification](PHASE-04-VERIFICATION.md). One CR2 has been developed locally; that does not qualify CR3, every camera or export workflows.
+Current verified baseline: project persistence, photo import, Library browsing/selection, metadata display, original previews, reference recovery, collections, editable metadata and keyboard culling. See [Phase 02 verification](PHASE-02-VERIFICATION.md) and [Phase 03 verification](PHASE-03-VERIFICATION.md). Cull has working controls. Edit has the Phase 04 renderer, saved recipes, undo/redo and, since the first Phase 05 increment, grouped controls for every recipe v1 field with white balance, rotation, numeric crop and compare-with-original; Presets, copy/paste and selection sync with revert are in place, and JPEG/TIFF export with naming, sizing and metadata policies completes the local workflow in code. Publish remains a preview shell. See [Phase 04 verification](PHASE-04-VERIFICATION.md), [Phase 05 verification](PHASE-05-VERIFICATION.md), [Phase 06 verification](PHASE-06-VERIFICATION.md) and [Phase 07 verification](PHASE-07-VERIFICATION.md). One CR2 has been developed locally; that does not qualify CR3, every camera or export workflows.
 
 ## Immediate order
 
@@ -28,10 +28,10 @@ This is an implementation priority, not a calendar estimate. Bug fixes can inter
 - [x] Local JPEG/HEIC/TIFF and system-supported RAW preview import exists.
 - [ ] Verify the owner's relevant Canon CR3 camera/files with the current macOS decoder; do not infer CR3 compatibility from the successful CR2 import.
 - [ ] Complete a real shoot's cull with persistent ratings/picks/rejects/favourites and useful focus inspection.
-- [ ] Edit supported RAW/JPEG photographs without changing originals.
+- [ ] Edit supported RAW/JPEG photographs with the full v0.1 tool set without changing originals. Every tool is implemented (Light, Colour with eyedropper, Detail, interactive crop, rotation, 100% inspection); this stays open until verified on real RAW and JPEG photographs.
 - [x] Close and reopen with the same photographic edit state (current Phase 04 controls).
-- [ ] Apply/revert presets and parameter-selective batch edits.
-- [ ] Export correct JPEG files that open outside NTO.
+- [x] Apply/revert presets and parameter-selective batch edits (Phase 06; live UI check still open).
+- [x] Export correct JPEG files that open outside NTO (Phase 07; verified by ImageIO decoding with dimensions, profile and metadata checks; a non-Apple viewer check remains).
 - [ ] Recover from unavailable originals, interrupted operations, and rendering/export failures without losing work.
 - [ ] Another developer can clone, build, open a photograph, edit, and export using documented prerequisites.
 
@@ -47,7 +47,7 @@ Existing local verification is a baseline, not a claim that all camera models or
 | RAW | Current Apple-native decoder/backend, verified per camera/file | Explicitly qualify Canon CR3; separate cross-platform RAW decoder later |
 | Rendering | Platform-neutral recipe intent behind the existing asynchronous boundary; Core Image/Metal as needed | Portable render graph with Metal on Apple and Vulkan elsewhere is the long-term preference |
 | Packaging | Keep existing native code working and testable | Extract portable Core/Catalog/Metadata/Recipe/Preset/Sync interfaces as useful; do not rewrite working code just to create named packages |
-| Distribution | Private development while workflows mature | Possible open-source Studio v0.1 before the complete ecosystem CORE release |
+| Distribution | Private development while workflows mature | Studio and shared contracts published in a separate open-source repository; web integration and Cloud stay private |
 | Revenue | No account/subscription gate on local editing/export | Optional managed hosting, storage, sync, Gallery, portfolio, commerce, and business services |
 
 Neither this document nor the master context changes the repository's visibility or license. MPL 2.0 is a candidate to investigate, not an adopted license.

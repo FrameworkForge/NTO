@@ -10,13 +10,13 @@ NTO Studio is native macOS photographic software. Gallery delivers work on the w
 
 The [master context received 13 September 2026](MASTER-CONTEXT.md) extends the GDD with open-source, business, cross-platform, Imaging, Commerce, and Mobile direction. [Studio v0.1](STUDIO-V0.1.md) reconciles scope differences and is the immediate priority; [Ecosystem strategy](ECOSYSTEM-STRATEGY.md) records deferred work and undecided commercial/licensing options.
 
-NTO is intended to become an open-source photography platform taking photographers from camera to customer: Shoot → Import → Cull → Edit → Publish → Sell → Deliver. The current repository remains private. Current code is not automatically open-source licensed merely because that is the intended direction.
+NTO is intended to become an open-source photography platform taking photographers from camera to customer: Shoot → Import → Cull → Edit → Publish → Sell → Deliver. This repository is private and holds the whole ecosystem; Studio and the shared contracts are to be published in a separate open-source repository, while the web integration and Cloud stay private. Current code is not open-source licensed merely because that is the intended direction; no LICENSE file exists until the owner adopts one.
 
 **Prove the local Mac workflow first:** create project → import real photographs → Library → Cull → Edit → save non-destructively → reopen correctly → JPEG export. Do not treat the existing preview-only Cull/Edit/Publish screens as completion of those features. A complete local Studio proof of concept comes before expanding hosted services or other platforms.
 
 Cloud is optional. The local editor must not require an account, subscription, storage purchase, or library upload. Photographer-owned originals, exports, catalog information, metadata, recipes, and presets should avoid artificial lock-in. Portable interchange remains work to implement; the existing SwiftData store is an Apple-local persistence implementation.
 
-The owner clarified that the current request is **documentation only**. This update records future priorities; it does not authorize implementing the newly described features now.
+The master context records **future priorities**. Its presence in the documentation does not by itself authorize implementing the features it describes; each is built only when separately requested and sequenced by the [build roadmap](BUILD-ROADMAP.md). Current implementation status is tracked in [STATUS.md](STATUS.md).
 
 ## Phase 01: implemented foundations
 
@@ -51,9 +51,21 @@ Core Image/CIRAWFilter now render originals through validated v1 recipes, with a
 
 See [Phase 04 verification](PHASE-04-VERIFICATION.md) and [recipe semantics](RENDERING.md). Full encoded renderer output is not the user-facing export workflow.
 
+## Phase 05: implemented core editing experience
+
+Grouped Light, Colour, Detail and Geometry sections with numeric entry, per-group reset, white balance as shot, Kelvin or by eyedropper, an interactive crop tool with aspect presets and Return/Escape, quarter-turn rotation, 100% inspection of the edited result, and compare-with-original. Highlights, shadows, whites, blacks and vibrance were added to recipe v1 as defaulted fields so earlier edits still open unchanged. Brilliance is deferred. See [Phase 05 verification](PHASE-05-VERIFICATION.md); live UI checks on real photographs remain.
+
+## Phase 06: implemented presets and batch edits
+
+Portable JSON presets carrying a chosen parameter subset, with hover preview, rename, delete, export and import. Copy and paste of a subset between photographs, and background sync of the copied subset to the selection with progress, Stop and a revert that skips photographs edited since. White balance and geometry are excluded unless chosen. See [Phase 06 verification](PHASE-06-VERIFICATION.md) and [PRESETS.md](PRESETS.md).
+
+## Phase 07: implemented export
+
+Selection export to JPEG (quality) or TIFF, original size or fitted, with filename templates, a metadata policy with location opt-in, explicit existing-file handling, a background queue with progress, Stop and per-file failures. Output is 8-bit sRGB with the profile embedded; exported pixels equal the engine's output. See [Phase 07 verification](PHASE-07-VERIFICATION.md). The local workflow import → organise → cull → edit → export now exists in code; real-shoot validation is the next gate. See [Phase 05 verification](PHASE-05-VERIFICATION.md).
+
 ## Later milestones
 
-The full editing toolset, export workflow, authentication UI, upload/sync, publishing, password galleries, rendition workers, and production delivery. GDD CORE is the first complete product, not a synonym for this foundation milestone. The GDD's Phase 2 professional expansion and later AI features remain deferred; these are distinct from roadmap Phase 02 (Import and Library).
+Live verification with real shoots, authentication UI, upload/sync, publishing, password galleries, rendition workers, and production delivery. GDD CORE is the first complete product, not a synonym for this foundation milestone. The GDD's Phase 2 professional expansion and later AI features remain deferred; these are distinct from roadmap Phase 02 (Import and Library).
 
 ## Product invariants
 

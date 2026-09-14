@@ -25,7 +25,7 @@ Apple UI remains native SwiftUI/AppKit as appropriate. Windows and Android UI de
 
 ## Open-source release gate
 
-Initial work remains private until the Mac workflow is credible. Before a public Studio v0.1 release:
+Decision of 14 September 2026: this repository stays private and holds the whole ecosystem. **NTO Studio and the shared contracts will be published in a separate open-source repository**; the web integration, Cloud services and operations remain private here, and may be opened later on the owner's terms. This refines the master context's list of open components (§30): the sync protocol and API surface are visible through Studio's client code regardless, but the server implementation and the gallery frontend are not committed to being open. Before creating the public Studio repository:
 
 - Prove clone → build → open photo → edit → export with good documentation and compatibility/recovery tests.
 - Review source/dependencies and settle a code license. MPL 2.0 is an unapproved candidate; no license change is made here.

@@ -39,7 +39,7 @@ The native UI verification project is named `Foundation verified`. Existing loca
 
 Node 24.21.0 and pnpm 10.32.1 are available through `scripts/pnpm`. Lima 2.2.0 and Docker CLI 29.8.0 were installed outside the repository for an isolated local engine. Its writable host mount is limited to the NTO workspace. Xcode's initial license blocker was resolved before the successful build/test runs.
 
-The resumed session's filesystem sandbox required additional access for Xcode caches, browser localhost sockets, and the local Docker socket. Those checks subsequently ran successfully; no verification remains blocked.
+During verification, the tooling sandbox initially lacked access to Xcode caches, browser localhost sockets, and the local Docker socket. After access was granted those checks ran successfully; no foundation verification remained blocked.
 
 ## Limits
 
