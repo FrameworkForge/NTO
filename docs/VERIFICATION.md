@@ -1,6 +1,6 @@
 # Foundation verification
 
-This is the historical Phase 01 record. See [Phase 02 verification](PHASE-02-VERIFICATION.md) for import/Library checks and [Phase 03 verification](PHASE-03-VERIFICATION.md) for the current organisation/culling implementation.
+This is the historical Phase 01 record. See [Phase 02 verification](PHASE-02-VERIFICATION.md) for import/Library checks and [Phase 03 verification](PHASE-03-VERIFICATION.md) for organisation/culling, plus [Phase 04 verification](PHASE-04-VERIFICATION.md) for current rendering and edit state.
 
 Verified locally on 13 September 2026, on Apple silicon running macOS 26.6.2 with Xcode 26.6.
 

@@ -222,9 +222,9 @@ struct WorkspaceView: View {
       lastProjectID = id?.uuidString ?? ""
     }
     .onChange(of: library.browsing.activeID) { _, id in workspace.selectedAssetID = id }
-    .onChange(of: scenePhase) { _, phase in if phase != .active { library.flushBrowsing() } }
+    .onChange(of: scenePhase) { _, phase in if phase != .active { library.flushBrowsing(); library.editor.finishGesture() } }
     .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
-      library.flushBrowsing()
+      library.flushBrowsing(); library.editor.finishGesture()
     }
     .onAppear {
       if workspace.selectedProjectID == nil {

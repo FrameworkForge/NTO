@@ -29,6 +29,7 @@ def struct(name,spec):
   decode_type='Optional<'+t[:-1]+'>' if t.endswith('?') else t
   lines += ['        '+f+' = try c.decode('+decode_type+'.self, forKey: .'+f+')']
   if f in versions:lines += ['        guard '+f+' == 1 else { throw ContractError.unsupportedVersion('+f+') }']
+ if name == 'EditRecipe': lines += ['        try validate()']
  lines += ['    }','    public func encode(to encoder: Encoder) throws {','        var c = encoder.container(keyedBy: CodingKeys.self)']
  lines += ['        try c.encode('+f+', forKey: .'+f+')' for f,t in fields]
  lines += ['    }']

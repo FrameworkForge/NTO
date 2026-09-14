@@ -6,13 +6,13 @@ Owner direction received 13 September 2026: incorporate the [master context](MAS
 
 A photographer can create a project, import real supported Canon photographs, browse and cull a shoot, edit a selection, close Studio, reopen with the correct edits, and export JPEGs. Originals remain unchanged. This works without an account, subscription, internet connection, or Cloud upload.
 
-Current verified baseline: project persistence, photo import, Library browsing/selection, metadata display, original previews, reference recovery, collections, editable metadata and keyboard culling. See [Phase 02 verification](PHASE-02-VERIFICATION.md) and [Phase 03 verification](PHASE-03-VERIFICATION.md). Cull has working controls; Edit and Publish still provide previews without their future tools. Importing a RAW preview is not proof of RAW development or export.
+Current verified baseline: project persistence, photo import, Library browsing/selection, metadata display, original previews, reference recovery, collections, editable metadata and keyboard culling. See [Phase 02 verification](PHASE-02-VERIFICATION.md) and [Phase 03 verification](PHASE-03-VERIFICATION.md). Cull has working controls. Edit now has the Phase 04 renderer, saved recipes, undo/redo and exposure/contrast/saturation controls; Publish remains a preview shell. See [Phase 04 verification](PHASE-04-VERIFICATION.md). One CR2 has been developed locally; that does not qualify CR3, every camera or export workflows.
 
 ## Immediate order
 
 1. Resolve any reproducible launch, import, missing-file, Library, or crash problem before adding tools. Record the failing steps and test the fix with existing catalogs preserved.
 2. Implemented locally; continue real-shoot qualification of culling and organisation: previous/next, ratings, pick/reject, favourites, zoom/100% inspection, collections, search/filter/sort, and persistent metadata. Preserve selection and working context across modes.
-3. Implement the renderer/RAW decoder boundary and persistent, versioned edit intent. Add exact undo/redo and tests comparing preview with export.
+3. Implemented in Phase 04: renderer/RAW decoder boundary, persistent versioned edits and undo/redo, with preview/full-output comparison tests. Continue camera and performance qualification.
 4. Add the first useful corrections: exposure, contrast, highlights/shadows, whites/blacks, temperature/tint, vibrance/saturation, sharpening, basic noise reduction, crop/rotate/straighten.
 5. Add portable parameter-subset presets and selective batch editing. Crop and white balance must not be copied accidentally.
 6. Deliver JPEG export with dimensions, quality, filename policy, and metadata choices; verify files outside Studio.
@@ -29,7 +29,7 @@ This is an implementation priority, not a calendar estimate. Bug fixes can inter
 - [ ] Verify the owner's relevant Canon CR3 camera/files with the current macOS decoder; do not infer CR3 compatibility from the successful CR2 import.
 - [ ] Complete a real shoot's cull with persistent ratings/picks/rejects/favourites and useful focus inspection.
 - [ ] Edit supported RAW/JPEG photographs without changing originals.
-- [ ] Close and reopen with the same photographic edit state.
+- [x] Close and reopen with the same photographic edit state (current Phase 04 controls).
 - [ ] Apply/revert presets and parameter-selective batch edits.
 - [ ] Export correct JPEG files that open outside NTO.
 - [ ] Recover from unavailable originals, interrupted operations, and rendering/export failures without losing work.

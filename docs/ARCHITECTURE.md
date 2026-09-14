@@ -19,7 +19,7 @@
 
 Asset is the original identity; EditRecipe is versioned edit state; Rendition is replaceable derived output; Publication records destination and order. Collections hold references rather than file copies. Local URLs exist only in native renderer inputs, never public DTOs. Database rows use snake_case; project adapters explicitly map to camelCase DTOs.
 
-Rendition jobs define source object key, recipe revision, target format/dimensions, and success/error result. Workers are not implemented. Studio will render edited masters with Core Image; future image workers will resize those outputs in a separate runtime. Supabase Edge Functions are unsuitable for heavy rendering or Sharp: https://supabase.com/docs/guides/functions/limits.
+Rendition jobs define source object key, recipe revision, target format/dimensions, and success/error result. Workers are not implemented. Studio now has a Core Image original/recipe renderer for previews and full-resolution encoded output; future image workers will resize those outputs in a separate runtime. Supabase Edge Functions are unsuitable for heavy rendering or Sharp: https://supabase.com/docs/guides/functions/limits.
 
 ## Cloud persistence and access
 
@@ -82,3 +82,11 @@ Mobile is a companion focused on cull, quick edits, publish/review, Gallery mana
 `LibraryController` owns the visible result and selection. It rebuilds the result when photos, query or collections change; annotation commits update in-memory records without refetching the full catalog on every key. Hidden selected IDs survive filtering but are excluded from bulk writes. Cull changes only the active visible photograph and advances when it leaves the filter.
 
 `PhotoPreviews.fullResolution` provides uncached, oriented original decoding for pixel inspection, with a 120-megapixel input limit and exact dimension checks. It does not implement photographic edit rendering. Working previews are prefetched near the active photograph. A window-scoped AppKit event monitor handles Cull shortcuts across fit/pixel-view replacement; SwiftUI owns state, and sheets/text editors retain their normal keys. The monitor is removed when its view leaves the workspace.
+
+## Phase 04 rendering and edit history
+
+`CoreImageRenderer` implements `PhotoRenderer` on an actor with an explicit colour-managed v1 graph and bounded encoded-result cache. `OriginalReference` may carry a local security bookmark and expected fingerprint; these remain private native inputs. `RecipeSemantics` validates the canonical v1 values, also checked by the generated Swift decoder and the TypeScript validator/schema.
+
+`LocalEditState` adds a Codable per-asset journal without changing existing original records. `EditHistory` stores exact parameter snapshots and coalesces gestures; revision numbers increase through undo/redo. `EditController` coordinates persistence and supersedable render tasks. SwiftUI reads its preview and status; controls do not own Core Image objects or database operations. Text editors retain native undo, while the photograph has persisted edit undo/redo in Edit mode.
+
+See [rendering semantics](RENDERING.md) and [Phase 04 verification](PHASE-04-VERIFICATION.md) for precise pipeline order, colour/geometry decisions and remaining limits.

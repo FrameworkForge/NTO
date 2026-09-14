@@ -17,6 +17,7 @@ import Observation
   public private(set) var issues: [String] = []
   public private(set) var hasImportReport = false
   public var errorMessage: String?
+  public let editor: EditController
   public let previews: PhotoPreviews
   private let store: ProjectStore
   private let worker: PhotoImportWorker
@@ -25,6 +26,7 @@ import Observation
   private var saveTask: Task<Void, Never>?
   private var recoveryFinished = false
   public init(store: ProjectStore, locations: LibraryLocations) {
+    editor = EditController(store: store, locations: locations)
     self.store = store; worker = PhotoImportWorker(locations: locations)
     previews = PhotoPreviews(locations: locations)
   }

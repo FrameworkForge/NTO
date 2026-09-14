@@ -49,6 +49,25 @@
         "height": 1
       },
       "rotation": 0
+    },
+    {
+      "schemaVersion": 1,
+      "assetId": "33333333-3333-4333-8333-333333333333",
+      "revision": 2,
+      "exposure": 0.75,
+      "contrast": 0.2,
+      "saturation": 0.8,
+      "temperature": 5500,
+      "tint": 7,
+      "sharpness": 0.4,
+      "noiseReduction": 0.2,
+      "crop": {
+        "x": 0.1,
+        "y": 0.2,
+        "width": 0.6,
+        "height": 0.5
+      },
+      "rotation": 90
     }
   ],
   "renditions": [

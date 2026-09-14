@@ -10,7 +10,9 @@ public struct SelectedPhotoCanvas: View {
     self.library = library; self.mode = mode; self.isFocused = isFocused
   }
   public var body: some View {
-    if mode == .cull {
+    if mode == .edit {
+      EditWorkspace(library: library, isFocused: isFocused)
+    } else if mode == .cull {
       CullWorkspace(library: library, isFocused: isFocused)
     } else if let photo = library.activePhoto {
       VStack(spacing: 12) {
@@ -18,8 +20,7 @@ public struct SelectedPhotoCanvas: View {
           .accessibilityElement(children: .contain).accessibilityLabel(photo.filename).padding(isFocused ? 0 : 20)
         if !isFocused {
           Text(photo.filename).font(.caption)
-          Text(mode == .edit ? "Original preview · editing is not available yet"
-            : "Original preview · Cloud publishing is not connected yet")
+          Text("Original preview · Cloud publishing is not connected yet")
             .font(.caption).foregroundStyle(.secondary).padding(.bottom, 16)
         }
       }

@@ -1,3 +1,4 @@
+import AppKit
 import NTOFoundation
 import SwiftUI
 
@@ -41,6 +42,18 @@ import SwiftUI
         Button("Import Photographs…") { workspace.importRequested.toggle() }
           .keyboardShortcut("i", modifiers: [.command, .shift])
           .disabled(library?.isImporting != false)
+      }
+      CommandGroup(replacing: .undoRedo) {
+        Button("Undo") {
+          if let text = NSApp.keyWindow?.firstResponder as? NSTextView { text.undoManager?.undo() }
+          else { library?.editor.undo() }
+        }.keyboardShortcut("z", modifiers: .command)
+          .disabled((NSApp.keyWindow?.firstResponder as? NSTextView)?.undoManager?.canUndo != true && (library?.editor.isActive != true || library?.editor.history?.undo.isEmpty != false))
+        Button("Redo") {
+          if let text = NSApp.keyWindow?.firstResponder as? NSTextView { text.undoManager?.redo() }
+          else { library?.editor.redo() }
+        }.keyboardShortcut("z", modifiers: [.command, .shift])
+          .disabled((NSApp.keyWindow?.firstResponder as? NSTextView)?.undoManager?.canRedo != true && (library?.editor.isActive != true || library?.editor.history?.redo.isEmpty != false))
       }
       CommandMenu("Workspace") {
         ForEach(Array(StudioMode.allCases.enumerated()), id: \.element.id) { i, mode in

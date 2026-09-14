@@ -194,6 +194,7 @@ public struct EditRecipe: Codable, Equatable, Sendable {
         noiseReduction = try c.decode(Double.self, forKey: .noiseReduction)
         crop = try c.decode(EditRecipeCrop.self, forKey: .crop)
         rotation = try c.decode(Double.self, forKey: .rotation)
+        try validate()
     }
     public func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)

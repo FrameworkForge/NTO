@@ -4,12 +4,14 @@ import Foundation
 public struct OriginalReference: Sendable {
   public let assetID: UUID
   public let url: URL
-  public init(assetID: UUID, url: URL) {
+  public let bookmark: Data?
+  public let fingerprint: String?
+  public init(assetID: UUID, url: URL, bookmark: Data? = nil, fingerprint: String? = nil) {
     self.assetID = assetID
-    self.url = url
+    self.url = url; self.bookmark = bookmark; self.fingerprint = fingerprint
   }
 }
-public struct RenderSpecification: Sendable {
+public struct RenderSpecification: Codable, Hashable, Sendable {
   public let maxDimension: Int
   public let format: String
   public init(maxDimension: Int, format: String) {
@@ -32,16 +34,20 @@ public protocol PhotoRenderer: Sendable {
     async throws -> RenderedResult
 }
 public enum RenderFailure: LocalizedError {
-  case notImplemented
+  case invalidRecipe, invalidOutput, assetMismatch, missingOriginal, changedOriginal, unsupportedRAW, decode, encode, tooLarge
   public var errorDescription: String? {
-    "Image rendering is not available in this foundation build."
+    switch self {
+    case .invalidRecipe: "This edit recipe contains invalid or out-of-range values."
+    case .invalidOutput: "Choose JPEG, PNG or TIFF and a maximum dimension between 1 and 30,000 pixels."
+    case .assetMismatch: "This recipe belongs to a different photograph."
+    case .missingOriginal: "The original is unavailable. Reconnect its drive or use Locate original in the inspector, then retry."
+    case .changedOriginal: "The original's contents have changed. Locate the original matching this photograph before rendering."
+    case .unsupportedRAW: "This RAW file cannot be developed by the system decoder. Check camera support and try a supported original."
+    case .decode: "The original could not be decoded. Check that the file is complete and supported, then retry."
+    case .encode: "The rendered image could not be produced. Try a smaller output and retry."
+    case .tooLarge: "This renderer currently supports originals up to 120 megapixels."
+    }
   }
-}
-public struct UnavailableRenderer: PhotoRenderer {
-  public init() {}
-  public func render(original: OriginalReference, recipe: EditRecipe, output: RenderSpecification)
-    async throws -> RenderedResult
-  { throw RenderFailure.notImplemented }
 }
 public struct RenditionJob: Codable, Sendable {
   public let id: UUID

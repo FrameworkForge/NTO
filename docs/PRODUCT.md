@@ -45,9 +45,15 @@ Projects have covers, dates, counts and name search. Manual collections support 
 
 See [Phase 03 verification](PHASE-03-VERIFICATION.md) for checks and limits. Complete real-shoot acceptance and camera qualification remain ahead of Studio v0.1.
 
+## Phase 04: implemented renderer and edit state
+
+Core Image/CIRAWFilter now render originals through validated v1 recipes, with a shared graph for preview and full-resolution encoded output. Local edit journals autosave changes and persist undo/redo, including coalesced gesture history. Edit exposes exposure, contrast and saturation to exercise the engine; the remaining editing interface follows in Phase 05.
+
+See [Phase 04 verification](PHASE-04-VERIFICATION.md) and [recipe semantics](RENDERING.md). Full encoded renderer output is not the user-facing export workflow.
+
 ## Later milestones
 
-RAW edit rendering, editing tools, undo/history, export, authentication UI, upload/sync, publishing, password galleries, rendition workers, and production delivery. GDD CORE is the first complete product, not a synonym for this foundation milestone. The GDD's Phase 2 professional expansion and later AI features remain deferred; these are distinct from roadmap Phase 02 (Import and Library).
+The full editing toolset, export workflow, authentication UI, upload/sync, publishing, password galleries, rendition workers, and production delivery. GDD CORE is the first complete product, not a synonym for this foundation milestone. The GDD's Phase 2 professional expansion and later AI features remain deferred; these are distinct from roadmap Phase 02 (Import and Library).
 
 ## Product invariants
 

@@ -72,7 +72,7 @@ struct CullWorkspace: View {
         if let rating = Int(key), (0...5).contains(rating) { library.annotate(rating: rating, activeOnly: true) }
         else if key == "p" { library.annotate(flag: .pick, activeOnly: true) }
         else if key == "x" { library.annotate(flag: .reject, activeOnly: true) }
-        else if key == "u" { library.annotate(flag: .none, activeOnly: true) }
+        else if key == "u" { library.annotate(flag: PhotoFlag.none, activeOnly: true) }
         else if key == "f" { library.annotate(favourite: !(library.activePhoto?.isFavourite ?? false), activeOnly: true) }
         else { return false }
       }

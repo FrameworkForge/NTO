@@ -31,11 +31,11 @@ Optics, client selections, version history, sports/school features, team product
 
 ## Where we are now
 
-**Phases 01–03 are implemented and locally verified. Phase 04, Rendering and edit-state engine, is the next build.**
+**Phases 01–04 are implemented and locally verified, with verification limits recorded. Phase 05, Core editing experience, is the next build.**
 
-Studio now imports photographs, persists local asset identities and project memberships, and provides a thumbnail Library with metadata and original previews. Collections, saved filters, editable metadata and keyboard culling now work locally. The website shells, shared models, and local Supabase infrastructure also exist. Local verification is documented in [Phase 03 verification](PHASE-03-VERIFICATION.md) and the historical [foundation record](VERIFICATION.md). The initial foundation commit is on `main` in the private [Nathan-Olivier/NTO repository](https://github.com/Nathan-Olivier/NTO).
+Studio now imports photographs, persists local asset identities and project memberships, and provides a thumbnail Library with metadata and original previews. Collections, saved filters, editable metadata and keyboard culling now work locally. Edit now renders originals through saved recipes with undo/redo and the first tone/colour controls. The website shells, shared models, and local Supabase infrastructure also exist. Local verification is documented in [Phase 04 verification](PHASE-04-VERIFICATION.md) and the historical [foundation record](VERIFICATION.md). The initial foundation commit is on `main` in the private [Nathan-Olivier/NTO repository](https://github.com/Nathan-Olivier/NTO).
 
-This does **not** mean the GDD's CORE product is complete. Non-destructive editing/rendering, export, authentication UI, sync, and publishing remain to be built. Import preview decoding exists; it is not the Phase 04 edit renderer. The website currently uses optional development fixtures; it is not a deployed portfolio backed by real publications. Remote CI results must be checked separately from the recorded local results.
+This does **not** mean the GDD's CORE product is complete. The full editing toolset, export workflow, authentication UI, sync, and publishing remain to be built. The Phase 04 edit renderer is now separate from Library/Cull original-preview decoding. The website currently uses optional development fixtures; it is not a deployed portfolio backed by real publications. Remote CI results must be checked separately from the recorded local results.
 
 ## Build sequence at a glance
 
@@ -44,7 +44,7 @@ This does **not** mean the GDD's CORE product is complete. Non-destructive editi
 | 01 | Foundations | Runnable native, web, and Cloud boundaries | Complete for foundation scope |
 | 02 | Safe import and Library | Real photographs can be imported and browsed | Implemented; locally verified |
 | 03 | Organisation, metadata, and culling | A shoot can become a reliable final selection | Implemented; locally verified |
-| 04 | Rendering and edit-state engine | Originals and recipes produce consistent images | Planned |
+| 04 | Rendering and edit-state engine | Originals and recipes produce consistent images | Implemented; locally verified with limits |
 | 05 | Core editing experience | A photograph can be edited safely and precisely | Planned |
 | 06 | Presets and batch edits | Editing scales to an event-sized selection | Planned |
 | 07 | Export | Finished photographs can be delivered to disk | Planned |
@@ -128,16 +128,18 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 
 **Depends on:** original references from Phase 02. Can advance alongside Phase 03 once asset access is stable.
 
-- [ ] Implement the asynchronous renderer behind its existing interface, outside SwiftUI views.
-- [ ] Use CIRAWFilter / Core Image for supported RAW and a consistent non-RAW path; introduce Metal only where necessary.
-- [ ] Establish the versioned order: decode → camera/RAW → tone → colour → detail → geometry → effects → output.
-- [ ] Evolve the recipe contract as parameters are added, keeping Swift/TypeScript fixtures and version handling aligned.
-- [ ] Make preview and full-resolution output use the same recipe semantics and colour-management decisions.
-- [ ] Cache by asset, recipe revision, and output specification; cancel or supersede stale interactive render requests.
-- [ ] Autosave recipes and introduce exact undo/redo commands; coalesce a continuous slider gesture into one history operation.
-- [ ] Surface missing originals, unsupported RAW, and rendering failures with recovery actions.
+- [x] Implement the asynchronous renderer behind its existing interface, outside SwiftUI views.
+- [x] Use CIRAWFilter / Core Image for supported RAW and a consistent non-RAW path; introduce Metal only where necessary.
+- [x] Establish the versioned order: decode → camera/RAW → tone → colour → detail → geometry → effects → output.
+- [x] Evolve the recipe contract as parameters are added, keeping Swift/TypeScript fixtures and version handling aligned.
+- [x] Make preview and full-resolution output use the same recipe semantics and colour-management decisions.
+- [x] Cache by asset, recipe revision, and output specification; cancel or supersede stale interactive render requests.
+- [x] Autosave recipes and introduce exact undo/redo commands; coalesce a continuous slider gesture into one history operation.
+- [x] Surface missing originals, unsupported RAW, and rendering failures with recovery actions.
 
 **Exit gate:** the same original and recipe render predictably; saved edits survive reopening; unsupported versions fail explicitly; rendering does not freeze the interface or mutate originals. Establish preview/export comparison tests before adding the full control set.
+
+**Verification:** [Phase 04 checks and limits](PHASE-04-VERIFICATION.md). Pointer-drag UI acceptance, RAW camera/colour qualification and full-shoot performance remain to be completed; gesture coalescing is covered by automated tests.
 
 ## Phase 05 - Core editing experience
 

@@ -94,3 +94,42 @@ export function assertRecipeVersion(value: { schemaVersion: number }): void {
   if (value.schemaVersion !== 1)
     throw new Error(`Unsupported recipe version: ${value.schemaVersion}`);
 }
+
+/** Renderer v1 parameter semantics; schema validation separately enforces the payload shape. */
+export function validateRecipe(recipe: EditRecipe): void {
+  assertRecipeVersion(recipe);
+  const ranges = {
+    exposure: [-5, 5],
+    contrast: [-1, 1],
+    saturation: [0, 2],
+    tint: [-150, 150],
+    sharpness: [0, 2],
+    noiseReduction: [0, 1],
+    rotation: [-180, 180],
+  } as const;
+  if (!Number.isSafeInteger(recipe.revision) || recipe.revision < 1)
+    throw new Error("Invalid recipe revision");
+  for (const key of Object.keys(ranges) as (keyof typeof ranges)[]) {
+    const [min, max] = ranges[key];
+    if (!Number.isFinite(recipe[key]) || recipe[key] < min || recipe[key] > max)
+      throw new Error(`Invalid recipe ${key}`);
+  }
+  if (
+    recipe.temperature !== null &&
+    (!Number.isFinite(recipe.temperature) ||
+      recipe.temperature < 2000 ||
+      recipe.temperature > 50000)
+  )
+    throw new Error("Invalid recipe temperature");
+  const { x, y, width, height } = recipe.crop;
+  if (
+    ![x, y, width, height].every(
+      (v) => Number.isFinite(v) && v >= 0 && v <= 1,
+    ) ||
+    width <= 0 ||
+    height <= 0 ||
+    x + width > 1 ||
+    y + height > 1
+  )
+    throw new Error("Invalid recipe crop");
+}

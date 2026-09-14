@@ -21,7 +21,7 @@ import SwiftData
     try reload()
   }
   public static func container(url: URL? = nil, inMemory: Bool = false) throws -> ModelContainer {
-    let schema = Schema([LocalProject.self, LocalPhoto.self, LocalPhotoMembership.self, LocalBrowsingState.self, LocalPhotoAnnotation.self, LocalLibraryQuery.self, LocalCollection.self, LocalCollectionItem.self, LocalProjectPresentation.self])
+    let schema = Schema([LocalProject.self, LocalPhoto.self, LocalPhotoMembership.self, LocalBrowsingState.self, LocalPhotoAnnotation.self, LocalLibraryQuery.self, LocalCollection.self, LocalCollectionItem.self, LocalProjectPresentation.self, LocalEditState.self])
     let config: ModelConfiguration
     if let url {
       config = ModelConfiguration(schema: schema, url: url)

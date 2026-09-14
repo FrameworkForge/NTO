@@ -119,7 +119,7 @@ struct CullingKeys: ViewModifier {
       if let rating = Int(value) { library.annotate(rating: rating, activeOnly: activeOnly) }
       else if value == "p" { library.annotate(flag: .pick, activeOnly: activeOnly) }
       else if value == "x" { library.annotate(flag: .reject, activeOnly: activeOnly) }
-      else if value == "u" { library.annotate(flag: .none, activeOnly: activeOnly) }
+      else if value == "u" { library.annotate(flag: PhotoFlag.none, activeOnly: activeOnly) }
       else if value == "f" { library.annotate(favourite: !(library.activePhoto?.isFavourite ?? false), activeOnly: activeOnly) }
       else { return .ignored }
       return .handled

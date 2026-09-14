@@ -33,3 +33,22 @@ test("rejects local filesystem paths and unknown fields", () => {
   });
   assert.equal(validate(value), false);
 });
+
+test("render recipes have matching bounded semantics and normalized crops", async () => {
+  const { validateRecipe } = await import("../src/index");
+  for (const recipe of fixture.recipes)
+    validateRecipe(recipe as EcosystemFixture["recipes"][number]);
+  const recipe = structuredClone(
+    fixture.recipes[1],
+  ) as EcosystemFixture["recipes"][number];
+  recipe.crop.x = 0.9;
+  assert.throws(() => validateRecipe(recipe), /crop/);
+  recipe.crop.x = 0.1;
+  recipe.exposure = NaN;
+  assert.throws(() => validateRecipe(recipe), /exposure/);
+  recipe.exposure = 6;
+  assert.throws(() => validateRecipe(recipe), /exposure/);
+  const invalid = structuredClone(fixture);
+  invalid.recipes[0].exposure = 6;
+  assert.equal(validate(invalid), false);
+});
