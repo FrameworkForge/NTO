@@ -1,9 +1,14 @@
 #!/bin/sh
+# Runs pnpm with the project's expected toolchain when one is installed in a known place.
+# Nothing here is required: with Node 24 and pnpm on your PATH, plain `pnpm` works the same.
 set -eu
-NTO_NODE_DIR="$HOME/.local/share/nto/toolchains/node-v24.21.0-darwin-arm64/bin"
+# An isolated Node 24 toolchain, if you keep one outside the repository. Override with NTO_NODE_DIR.
+NTO_NODE_DIR="${NTO_NODE_DIR:-$HOME/.local/share/nto/toolchains/node-v24.21.0-darwin-arm64/bin}"
 if [ -d "$NTO_NODE_DIR" ]; then export PATH="$NTO_NODE_DIR:$PATH"; fi
-NTO_CONTAINER_BIN="$HOME/.local/share/nto/toolchains/containers/bin"
+# Lima and Docker CLI binaries, if installed for local Supabase. Override with NTO_CONTAINER_BIN.
+NTO_CONTAINER_BIN="${NTO_CONTAINER_BIN:-$HOME/.local/share/nto/toolchains/containers/bin}"
 if [ -d "$NTO_CONTAINER_BIN" ]; then export PATH="$NTO_CONTAINER_BIN:$PATH"; fi
+# Point Docker at the Lima VM created by scripts/container-start unless DOCKER_HOST is already set.
 if [ -z "${DOCKER_HOST:-}" ] && [ -S "$HOME/.lima/nto/sock/docker.sock" ]; then
   export DOCKER_HOST="unix://$HOME/.lima/nto/sock/docker.sock"
 fi

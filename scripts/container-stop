@@ -1,5 +1,6 @@
 #!/bin/sh
+# Stops the Lima VM created by scripts/container-start.
 set -eu
-NTO_CONTAINER_BIN="$HOME/.local/share/nto/toolchains/containers/bin"
-export PATH="$NTO_CONTAINER_BIN:$PATH"
+NTO_CONTAINER_BIN="${NTO_CONTAINER_BIN:-$HOME/.local/share/nto/toolchains/containers/bin}"
+if [ -d "$NTO_CONTAINER_BIN" ]; then export PATH="$NTO_CONTAINER_BIN:$PATH"; fi
 exec limactl stop nto
