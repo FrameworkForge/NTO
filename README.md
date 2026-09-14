@@ -33,7 +33,7 @@ Node 24.21.0 (see `.node-version`), pnpm 10.32.1, and Python 3 are required. `./
 ./scripts/pnpm dev
 ```
 
-Open http://localhost:3000. The default has an honest empty portfolio. To explore bundled abstract fixture artwork:
+Open http://localhost:3000. The site is the cinematic nto.motion layout: a full-viewport hero, a sticky project sequence, the Studio pipeline with what exists today, and an immersive gallery viewer (see [the design record](docs/WEB-SITE-DESIGN.md)). The default has an honest empty portfolio. To explore bundled abstract fixture artwork:
 
 ```sh
 NTO_DEMO=1 ./scripts/pnpm dev

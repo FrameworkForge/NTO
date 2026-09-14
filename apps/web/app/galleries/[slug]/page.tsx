@@ -14,10 +14,10 @@ export default async function GalleryPage({
     <main id="main" className={s.main}>
       <div className={s.eyebrow}>
         <Link href={`/projects/${slug}`}>← Project story</Link>
-        <span>Development gallery / 003 studies</span>
+        <span>Development gallery / {String(demoProject.count).padStart(3, "0")} studies</span>
       </div>
       <h1 className={s.subhead}>{demoProject.title}</h1>
-      <Gallery />
+      <Gallery title={demoProject.title} />
       <p className={s.note}>
         Fixture artwork. Downloads and private gallery delivery are not
         available in this scaffold.

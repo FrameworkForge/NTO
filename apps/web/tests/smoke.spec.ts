@@ -4,6 +4,7 @@ test("portfolio, story, and gallery are navigable", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "The space between." }),
   ).toBeVisible();
+  await expect(page.getByRole("list", { name: /NTO workflow/ }).getByRole("listitem")).toHaveCount(7);
   await page.getByRole("link", { name: /01 \/ Studies/ }).click();
   await expect(
     page.getByRole("heading", { name: "Studies in light" }),
@@ -13,6 +14,8 @@ test("portfolio, story, and gallery are navigable", async ({ page }) => {
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("ArrowRight");
   await expect(page.getByText("Study 2 / 3")).toBeVisible();
+  await page.getByRole("dialog").getByRole("button", { name: "Study 3" }).click();
+  await expect(page.getByText("Study 3 / 3")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(
