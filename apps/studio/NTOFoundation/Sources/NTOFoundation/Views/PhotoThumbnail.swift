@@ -29,7 +29,7 @@ struct PhotoThumbnail: View {
         try Task.checkCancellation()
         image = rendered
       } catch is CancellationError { }
-      catch { failure = error.localizedDescription }
+      catch { if !Task.isCancelled { failure = error.localizedDescription } }
     }
     .onDisappear { image = nil }
   }

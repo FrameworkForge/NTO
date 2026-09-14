@@ -2,7 +2,9 @@ import Foundation
 import Observation
 
 @MainActor @Observable public final class LibraryController {
-  public private(set) var photos: [PhotoRecord] = []
+  public private(set) var photos: [PhotoRecord] = [] { didSet { rebuildVisiblePhotos() } }
+  public private(set) var collections: [CollectionRecord] = [] { didSet { rebuildVisiblePhotos() } }
+  public private(set) var query = LibraryQuery() { didSet { rebuildVisiblePhotos() } }
   public private(set) var browsing = BrowsingState()
   public private(set) var projectID: UUID?
   public private(set) var isImporting = false
@@ -28,39 +30,101 @@ import Observation
   }
   public var activePhoto: PhotoRecord? { photos.first { $0.id == browsing.activeID } }
 
+  public private(set) var visiblePhotos: [PhotoRecord] = []
+  private func rebuildVisiblePhotos() {
+    visiblePhotos = query.apply(to: photos, members: query.collectionID.map { id in collections.first { $0.id == id }?.photoIDs ?? [] })
+  }
+  public var actionableIDs: Set<UUID> { browsing.selectedIDs.intersection(visiblePhotos.map(\.id)) }
+  public func setQuery(_ value: LibraryQuery) { query = value; scheduleSave() }
+  public func navigate(_ delta: Int) {
+    let ids = visiblePhotos.map(\.id)
+    guard !ids.isEmpty else { return }
+    let current = browsing.activeID.flatMap { ids.firstIndex(of: $0) } ?? (delta > 0 ? -1 : ids.count)
+    select(ids[min(max(current + delta, 0), ids.count - 1)])
+    prefetch(around: browsing.activeID.map { [$0] } ?? [])
+  }
+  public func annotate(rating: Int? = nil, flag: PhotoFlag? = nil, favourite: Bool? = nil,
+    caption: String? = nil, keywords: [String]? = nil, activeOnly: Bool = false) {
+    let oldIndex = visiblePhotos.firstIndex { $0.id == browsing.activeID } ?? 0
+    let ids = activeOnly ? Set(browsing.activeID.map { [$0] } ?? []).intersection(actionableIDs) : actionableIDs
+    do {
+      try store.annotate(ids, rating: rating, flag: flag, favourite: favourite, caption: caption, keywords: keywords)
+      photos = photos.map { record in
+        guard ids.contains(record.id) else { return record }
+        var edited = record
+        if let rating { edited.rating = rating }
+        if let flag { edited.flag = flag }
+        if let favourite { edited.isFavourite = favourite }
+        if let caption { edited.caption = caption }
+        if let keywords { edited.keywords = Array(Set(keywords.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty })).sorted() }
+        return edited
+      }
+    } catch { errorMessage = error.localizedDescription; return }
+    if activeOnly, !visiblePhotos.isEmpty, !visiblePhotos.contains(where: { $0.id == browsing.activeID }) {
+      select(visiblePhotos[min(oldIndex, visiblePhotos.count - 1)].id)
+    }
+  }
+  public func createCollection(title: String) {
+    guard let projectID else { return }
+    performOrganisation { _ = try store.createCollection(title: title, projectID: projectID) }
+  }
+  public func renameCollection(_ id: UUID, title: String) { performOrganisation { try store.renameCollection(id, title: title) } }
+  public func removeCollection(_ id: UUID) {
+    performOrganisation { try store.removeCollection(id) }
+    if !collections.contains(where: { $0.id == id }), query.collectionID == id { query.collectionID = nil; scheduleSave() }
+  }
+  public func moveCollection(_ id: UUID, offset: Int) { performOrganisation { try store.moveCollection(id, offset: offset) } }
+  public func collect(in id: UUID, included: Bool) {
+    performOrganisation { try store.setCollectionMembership(actionableIDs, collectionID: id, included: included) }
+  }
+  private func performOrganisation(_ operation: () throws -> Void) {
+    do {
+      try operation()
+      if let projectID { collections = try store.collections(in: projectID) }
+    } catch { errorMessage = error.localizedDescription }
+  }
+
   public func open(projectID: UUID?) {
     guard self.projectID != projectID else { return }
     flushBrowsing()
     self.projectID = projectID
     do {
       photos = try projectID.map { try store.photos(in: $0) } ?? []
+      collections = try projectID.map { try store.collections(in: $0) } ?? []
+      query = try projectID.map { try store.libraryQuery(for: $0) } ?? LibraryQuery()
+      if let id = query.collectionID, !collections.contains(where: { $0.id == id }) { query.collectionID = nil }
       browsing = try projectID.map { try store.browsingState(for: $0) } ?? BrowsingState()
       let valid = Set(photos.map(\.id))
       browsing.selectedIDs.formIntersection(valid)
       if let active = browsing.activeID, !valid.contains(active) { browsing.activeID = nil }
       if let scroll = browsing.scrollID, !valid.contains(scroll) { browsing.scrollID = nil }
-    } catch { photos = []; browsing = BrowsingState(); errorMessage = error.localizedDescription }
+    } catch { photos = []; collections = []; query = LibraryQuery(); browsing = BrowsingState(); errorMessage = error.localizedDescription }
   }
   public func select(_ id: UUID, extend: Bool = false, toggle: Bool = false) {
-    browsing.select(id, orderedIDs: photos.map(\.id), extend: extend, toggle: toggle)
+    browsing.select(id, orderedIDs: visiblePhotos.map(\.id), extend: extend, toggle: toggle)
     scheduleSave()
   }
-  public func prefetch(around visibleIDs: [UUID]) {
+  public func prefetch(around visibleIDs: [UUID], maxPixel: Int = 512) {
     prefetchTask?.cancel()
     let visible = Set(visibleIDs)
-    let indices = photos.indices.filter { visible.contains(photos[$0].id) }
+    let candidates = visiblePhotos
+    let indices = candidates.indices.filter { visible.contains(candidates[$0].id) }
     guard let first = indices.first, let last = indices.last else { return }
-    let neighbours = Array(photos[max(0, first - 8)..<min(photos.count, last + 9)])
+    let nearby = max(0, first - 4)..<min(candidates.count, last + 5)
+    let neighbours = nearby.sorted { a, b in
+      let da = max(first - a, a - last, 0), db = max(first - b, b - last, 0)
+      return da == db ? a < b : da < db
+    }.map { candidates[$0] }
     prefetchTask = Task {
       for photo in neighbours {
         if Task.isCancelled { return }
-        _ = try? await previews.image(for: photo)
+        _ = try? await previews.image(for: photo, maxPixel: maxPixel)
       }
     }
   }
   public func selectAll() {
-    browsing.selectedIDs = Set(photos.map(\.id))
-    browsing.activeID = browsing.activeID ?? photos.first?.id
+    browsing.selectedIDs = Set(visiblePhotos.map(\.id))
+    browsing.activeID = visiblePhotos.first(where: { $0.id == browsing.activeID })?.id ?? visiblePhotos.first?.id
     browsing.anchorID = browsing.activeID
     scheduleSave()
   }
@@ -76,7 +140,7 @@ import Observation
   public func flushBrowsing() {
     saveTask?.cancel(); saveTask = nil
     guard let projectID else { return }
-    do { try store.saveBrowsingState(browsing, for: projectID) }
+    do { try store.saveBrowsingState(browsing, for: projectID); try store.saveLibraryQuery(query, for: projectID) }
     catch { errorMessage = "Browsing state could not be saved: \(error.localizedDescription)" }
   }
   public func dismissReport() { hasImportReport = false }

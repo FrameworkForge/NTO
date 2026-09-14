@@ -229,6 +229,13 @@ final class PhotoLibraryTests: XCTestCase {
     print("10,000-record Library open: \(elapsed)")
     XCTAssertEqual(library.photos.count, 10_000)
     XCTAssertLessThan(elapsed, .seconds(5))
+    let ratingStart = ContinuousClock.now
+    let reviewIDs = Array(library.photos.prefix(50).map(\.id))
+    for id in reviewIDs { library.select(id); library.annotate(rating: 4, activeOnly: true) }
+    let ratingElapsed = ContinuousClock.now - ratingStart
+    print("50 saved ratings in 10,000-record library: \(ratingElapsed)")
+    XCTAssertLessThan(ratingElapsed, .seconds(5))
+    XCTAssertTrue(try store.photos(in: p.id).filter { reviewIDs.contains($0.id) }.allSatisfy { $0.rating == 4 })
     let selected = library.photos[5].id
     library.select(selected); library.setDensity(200); library.setScroll(selected)
     library.open(projectID: q.id)

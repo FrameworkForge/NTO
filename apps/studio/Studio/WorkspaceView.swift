@@ -15,6 +15,8 @@ struct WorkspaceView: View {
   @State private var showProjectSheet = false
   @State private var editingProject: LocalProject?
   @State private var projectTitle = ""
+  @State private var projectSearch = ""
+  @State private var coverRevision = 0
   @State private var errorMessage: String?
   @State private var demo = ProcessInfo.processInfo.arguments.contains("--fixtures")
   private let fixtureID = UUID(uuidString: "33333333-3333-4333-8333-333333333333")!
@@ -50,18 +52,25 @@ struct WorkspaceView: View {
                 Image(systemName: "plus")
               }.help("New project").accessibilityLabel("New project")
             }
+            TextField("Search projects", text: $projectSearch).textFieldStyle(.roundedBorder)
             ScrollView {
               VStack(alignment: .leading, spacing: 8) {
-                ForEach(store.projects, id: \.id) { project in
+                ForEach(store.projects.filter { projectSearch.isEmpty || $0.title.localizedStandardContains(projectSearch) }, id: \.id) { project in
                   Button {
                     workspace.selectedProjectID = project.id
                   } label: {
-                    Text(project.title).lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
+                    ProjectSummaryLabel(project: project, store: store, library: library, revision: coverRevision)
                       .padding(8).background(
                         workspace.selectedProjectID == project.id
                           ? Color.white.opacity(0.08) : .clear,
                         in: RoundedRectangle(cornerRadius: 4))
                   }.buttonStyle(.plain).contextMenu {
+                    Button("Use selected photograph as cover") {
+                      if let photo = library.activePhoto {
+                        do { try store.setProjectCover(photo.id, projectID: project.id); coverRevision += 1 }
+                        catch { errorMessage = error.localizedDescription }
+                      }
+                    }.disabled(library.projectID != project.id || library.activePhoto == nil)
                     Button("Rename Project") {
                       editingProject = project
                       projectTitle = project.title
@@ -258,7 +267,7 @@ struct WorkspaceView: View {
   private var emptyDescription: String {
     switch workspace.mode {
     case .library: "Drop files or folders here, or choose Import photographs to begin. Originals are never changed."
-    case .cull: "Import photographs into Library to preview them here. Rating and culling controls are not available yet."
+    case .cull: "Import photographs into Library to rate, flag and review them here."
     case .edit: "The rendering boundary is ready. Editing tools are a later milestone."
     case .publish: "Cloud publishing is not connected in this foundation build."
     }

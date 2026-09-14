@@ -68,6 +68,10 @@ public struct PhotoRecord: Identifiable, Sendable, Equatable {
   public var bookmark: Data?
   public var managedPath: String?
   public var locationRevision: Int = 0
+  public var rating: Int = 0
+  public var flag: PhotoFlag = .none
+  public var isFavourite: Bool = false
+  public var keywords: [String] = []
   public var isReferenced: Bool { managedPath == nil }
 }
 

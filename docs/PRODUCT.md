@@ -39,9 +39,15 @@ The owner clarified that the current request is **documentation only**. This upd
 
 See [Phase 02 verification](PHASE-02-VERIFICATION.md) for evidence and limits. A decoded original preview is separate from the deferred non-destructive edit renderer.
 
+## Phase 03: implemented organisation and culling
+
+Projects have covers, dates, counts and name search. Manual collections support ordering and shared asset membership. Local ratings, picks/rejects, favourites, captions and keywords persist, with explicit selection-wide metadata edits. Library and Cull share saved filters/search/sort and selection. Cull provides keyboard review, a filmstrip and full-resolution inspection, including Focus Mode.
+
+See [Phase 03 verification](PHASE-03-VERIFICATION.md) for checks and limits. Complete real-shoot acceptance and camera qualification remain ahead of Studio v0.1.
+
 ## Later milestones
 
-Collections, metadata filtering/search/sorting, editable ratings and descriptions, culling shortcuts, RAW edit rendering, editing tools, undo/history, export, authentication UI, upload/sync, publishing, password galleries, rendition workers, and production delivery. GDD CORE is the first complete product, not a synonym for this foundation milestone. The GDD's Phase 2 professional expansion and later AI features remain deferred; these are distinct from roadmap Phase 02 (Import and Library).
+RAW edit rendering, editing tools, undo/history, export, authentication UI, upload/sync, publishing, password galleries, rendition workers, and production delivery. GDD CORE is the first complete product, not a synonym for this foundation milestone. The GDD's Phase 2 professional expansion and later AI features remain deferred; these are distinct from roadmap Phase 02 (Import and Library).
 
 ## Product invariants
 

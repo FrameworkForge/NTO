@@ -5,7 +5,16 @@ extension ProjectStore {
   public func photos(in projectID: UUID) throws -> [PhotoRecord] {
     var descriptor = FetchDescriptor<LocalPhotoMembership>(predicate: #Predicate { $0.projectID == projectID })
     descriptor.relationshipKeyPathsForPrefetching = [\.photo]
-    return try context.fetch(descriptor).compactMap { $0.photo?.record }.sorted {
+    let annotations = Dictionary(uniqueKeysWithValues: try context.fetch(FetchDescriptor<LocalPhotoAnnotation>()).map { ($0.photoID, $0) })
+    return try context.fetch(descriptor).compactMap { membership -> PhotoRecord? in
+      guard var record = membership.photo?.record else { return nil }
+      if let annotation = annotations[record.id] {
+        record.rating = annotation.rating; record.flag = PhotoFlag(rawValue: annotation.flag) ?? .none
+        record.isFavourite = annotation.isFavourite; record.keywords = annotation.keywords
+        record.caption = annotation.caption ?? record.caption
+      }
+      return record
+    }.sorted {
       $0.importedAt == $1.importedAt ? $0.filename.localizedStandardCompare($1.filename) == .orderedAscending : $0.importedAt < $1.importedAt
     }
   }

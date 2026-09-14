@@ -31,11 +31,11 @@ Optics, client selections, version history, sports/school features, team product
 
 ## Where we are now
 
-**Phases 01 and 02 are implemented and locally verified. Phase 03, Organisation, metadata, and culling, is the recommended next build.**
+**Phases 01–03 are implemented and locally verified. Phase 04, Rendering and edit-state engine, is the next build.**
 
-Studio now imports photographs, persists local asset identities and project memberships, and provides a thumbnail Library with metadata and original previews. The website shells, shared models, and local Supabase infrastructure also exist. Local verification is documented in [VERIFICATION.md](VERIFICATION.md). The initial foundation commit is on `main` in the private [Nathan-Olivier/NTO repository](https://github.com/Nathan-Olivier/NTO).
+Studio now imports photographs, persists local asset identities and project memberships, and provides a thumbnail Library with metadata and original previews. Collections, saved filters, editable metadata and keyboard culling now work locally. The website shells, shared models, and local Supabase infrastructure also exist. Local verification is documented in [Phase 03 verification](PHASE-03-VERIFICATION.md) and the historical [foundation record](VERIFICATION.md). The initial foundation commit is on `main` in the private [Nathan-Olivier/NTO repository](https://github.com/Nathan-Olivier/NTO).
 
-This does **not** mean the GDD's CORE product is complete. Culling controls, non-destructive editing/rendering, export, authentication UI, sync, and publishing remain to be built. Import preview decoding exists; it is not the Phase 04 edit renderer. The website currently uses optional development fixtures; it is not a deployed portfolio backed by real publications. Remote CI results must be checked separately from the recorded local results.
+This does **not** mean the GDD's CORE product is complete. Non-destructive editing/rendering, export, authentication UI, sync, and publishing remain to be built. Import preview decoding exists; it is not the Phase 04 edit renderer. The website currently uses optional development fixtures; it is not a deployed portfolio backed by real publications. Remote CI results must be checked separately from the recorded local results.
 
 ## Build sequence at a glance
 
@@ -43,7 +43,7 @@ This does **not** mean the GDD's CORE product is complete. Culling controls, non
 | --- | --- | --- | --- |
 | 01 | Foundations | Runnable native, web, and Cloud boundaries | Complete for foundation scope |
 | 02 | Safe import and Library | Real photographs can be imported and browsed | Implemented; locally verified |
-| 03 | Organisation, metadata, and culling | A shoot can become a reliable final selection | Next |
+| 03 | Organisation, metadata, and culling | A shoot can become a reliable final selection | Implemented; locally verified |
 | 04 | Rendering and edit-state engine | Originals and recipes produce consistent images | Planned |
 | 05 | Core editing experience | A photograph can be edited safely and precisely | Planned |
 | 06 | Presets and batch edits | Editing scales to an event-sized selection | Planned |
@@ -106,17 +106,19 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 
 **Depends on:** real assets and preview caches from Phase 02.
 
-- [ ] Extend projects with cover, date, and counts; implement manual collection creation, renaming, ordering, membership, and removal.
-- [ ] Allow an asset in multiple collections without copying its original. Collection removal must not delete originals.
-- [ ] Persist ratings, picks, rejects, favourites, and supported captions/keywords; keep camera metadata read-only.
-- [ ] Support appropriate metadata edits across a selection.
-- [ ] Add filtering by rating, flag, camera, date, and media type, plus metadata/project search and sorting.
-- [ ] Persist filters and scroll position per project without destroying valid selection.
-- [ ] Implement keyboard-first Cull: arrows, 1-5 ratings, P pick, X reject, F favourite, and Space for 100% inspection.
-- [ ] Preload neighbouring previews in both directions and keep rating writes independent of rendering.
-- [ ] Provide an optional filmstrip and verify Focus Mode with actual photos.
+- [x] Extend projects with cover, date, and counts; implement manual collection creation, renaming, ordering, membership, and removal.
+- [x] Allow an asset in multiple collections without copying its original. Collection removal must not delete originals.
+- [x] Persist ratings, picks, rejects, favourites, and supported captions/keywords; keep camera metadata read-only.
+- [x] Support appropriate metadata edits across a selection.
+- [x] Add filtering by rating, flag, camera, date, and media type, plus metadata/project search and sorting.
+- [x] Persist filters and scroll position per project without destroying valid selection.
+- [x] Implement keyboard-first Cull: arrows, 1-5 ratings, P pick, X reject, F favourite, and Space for 100% inspection.
+- [x] Preload neighbouring previews in both directions and keep rating writes independent of rendering.
+- [x] Provide an optional filmstrip and verify Focus Mode with actual photos.
 
 **Exit gate:** a photographer can cull an entire shoot using the keyboard, navigate rapidly without losing ratings, and reopen the project with metadata intact. Organising photographs never duplicates or unexpectedly removes files.
+
+**Verification:** [Phase 03 results and limits](PHASE-03-VERIFICATION.md). Real-shoot and camera qualification remain part of Studio v0.1 acceptance.
 
 **Scope note:** Studio favourites are CORE metadata. Recipient favourites and client selection in Gallery are a separate Phase 2 feature.
 

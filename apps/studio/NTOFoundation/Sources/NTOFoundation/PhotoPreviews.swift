@@ -68,6 +68,28 @@ public actor PhotoPreviews {
     memory.setObject(image, forKey: key as NSString, cost: image.bytesPerRow * image.height)
     return image
   }
+  /// One uncached, oriented image for pixel inspection. Never inserted into the grid cache.
+  public func fullResolution(for photo: PhotoRecord) throws -> CGImage {
+    try Task.checkCancellation()
+    guard Int64(photo.width) * Int64(photo.height) <= 120_000_000 else { throw PhotoError.previewFailed }
+    let image = try withOriginal(photo, locations: locations) { url in
+      if photo.isReferenced, try PhotoImportWorker.fingerprint(url) != photo.fingerprint {
+        throw PhotoError.changedOriginal(photo.filename)
+      }
+      guard let source = CGImageSourceCreateWithURL(url as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary),
+        let image = CGImageSourceCreateThumbnailAtIndex(source, 0, [
+          kCGImageSourceCreateThumbnailFromImageAlways: true,
+          kCGImageSourceCreateThumbnailWithTransform: true,
+          kCGImageSourceThumbnailMaxPixelSize: max(photo.width, photo.height),
+          kCGImageSourceShouldCacheImmediately: true
+        ] as CFDictionary), image.width == photo.width, image.height == photo.height else {
+        throw PhotoError.previewFailed
+      }
+      return image
+    }
+    try Task.checkCancellation()
+    return image
+  }
   public func originalStatus(_ photo: PhotoRecord) -> String? {
     do { try withOriginal(photo, locations: locations) { _ in () }; return nil }
     catch { return error.localizedDescription }

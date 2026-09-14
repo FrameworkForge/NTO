@@ -6,12 +6,12 @@ Owner direction received 13 September 2026: incorporate the [master context](MAS
 
 A photographer can create a project, import real supported Canon photographs, browse and cull a shoot, edit a selection, close Studio, reopen with the correct edits, and export JPEGs. Originals remain unchanged. This works without an account, subscription, internet connection, or Cloud upload.
 
-Current verified baseline: project persistence, photo import, Library browsing/selection, metadata display, original previews, and reference recovery. See [Phase 02 verification](PHASE-02-VERIFICATION.md). Cull/Edit/Publish screens currently provide previews; their unfinished tools must not be described as working features. Importing a RAW preview is not proof of RAW development or export.
+Current verified baseline: project persistence, photo import, Library browsing/selection, metadata display, original previews, reference recovery, collections, editable metadata and keyboard culling. See [Phase 02 verification](PHASE-02-VERIFICATION.md) and [Phase 03 verification](PHASE-03-VERIFICATION.md). Cull has working controls; Edit and Publish still provide previews without their future tools. Importing a RAW preview is not proof of RAW development or export.
 
 ## Immediate order
 
 1. Resolve any reproducible launch, import, missing-file, Library, or crash problem before adding tools. Record the failing steps and test the fix with existing catalogs preserved.
-2. Complete local culling and organisation: previous/next, ratings, pick/reject, favourites, zoom/100% inspection, collections, search/filter/sort, and persistent metadata. Preserve selection and working context across modes.
+2. Implemented locally; continue real-shoot qualification of culling and organisation: previous/next, ratings, pick/reject, favourites, zoom/100% inspection, collections, search/filter/sort, and persistent metadata. Preserve selection and working context across modes.
 3. Implement the renderer/RAW decoder boundary and persistent, versioned edit intent. Add exact undo/redo and tests comparing preview with export.
 4. Add the first useful corrections: exposure, contrast, highlights/shadows, whites/blacks, temperature/tint, vibrance/saturation, sharpening, basic noise reduction, crop/rotate/straighten.
 5. Add portable parameter-subset presets and selective batch editing. Crop and white balance must not be copied accidentally.

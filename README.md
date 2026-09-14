@@ -4,7 +4,7 @@ Photography. Software. Motion.
 
 NTO is a photography ecosystem intended to become open source, built around **Shoot → Import → Cull → Edit → Publish → Sell → Deliver**. The goal is a native, local-first workflow where photographers own their originals, catalog information, edits, presets, and exports.
 
-**Current priority: get NTO Studio working as a complete local Mac photography application.** Foundations and local photo import/Library are implemented. Culling controls, non-destructive editing, and JPEG export are still ahead. This is not yet Studio v0.1 or the GDD's complete CORE release.
+**Current priority: get NTO Studio working as a complete local Mac photography application.** Foundations, local photo import/Library, organisation, metadata and keyboard culling are implemented. Non-destructive editing and JPEG export are still ahead. This is not yet Studio v0.1 or the GDD's complete CORE release.
 
 Local import, organisation, editing, and export must remain usable without an account, subscription, or Cloud upload. Optional hosted Cloud, Gallery, Portfolio/nto.motion, Commerce, Mobile, and future platforms are the longer-term direction. Their existence in the docs does not mean they are implemented.
 
@@ -48,9 +48,9 @@ Open `apps/studio/NTOStudio.xcodeproj`, select **NTOStudio**, and Run. Requires 
 ./scripts/pnpm test:studio
 ```
 
-Use **Import…** or **Shift-Cmd-I** to choose files/folders, a destination project, copy/reference storage, and an optional default caption. You can also drop files/folders onto the canvas. The Library supports click, Shift/Command selection, arrow navigation, Cmd-A, and Return to preview. The inspector shows capture metadata and can reconnect a referenced original by content identity. Editing, ratings, export, and publishing controls remain later milestones.
+Use **Import…** or **Shift-Cmd-I** to choose files/folders, a destination project, copy/reference storage, and an optional default caption. You can also drop files/folders onto the canvas. The Library supports click, Shift/Command selection, arrow navigation, Cmd-A, and Return to preview. The inspector shows capture metadata and can reconnect a referenced original by content identity. Library and Cull now share saved search/filter/sort and collections. Use 0–5 to rate, P to pick, X to reject, U to clear a flag, F for favourite, and Space in Cull for Fit/100% inspection. Edit captions and keywords in the inspector; collection operations are in the Collections menu. Editing, export and publishing remain later milestones.
 
-Copies and previews are stored under `~/Library/Application Support/NTO/Studio`; referenced originals stay where you chose them. Back up this library directory, including its database and Originals folder. PreviewCache is derived and rebuildable. See [Phase 02 verification and limits](docs/PHASE-02-VERIFICATION.md).
+Copies and previews are stored under `~/Library/Application Support/NTO/Studio`; referenced originals stay where you chose them. Back up this library directory, including its database and Originals folder. PreviewCache is derived and rebuildable. See [Phase 02 import verification](docs/PHASE-02-VERIFICATION.md) and [Phase 03 culling verification and limits](docs/PHASE-03-VERIFICATION.md).
 
 Unsigned local builds are supported by the command above. Distribution signing and notarization are outside this milestone.
 

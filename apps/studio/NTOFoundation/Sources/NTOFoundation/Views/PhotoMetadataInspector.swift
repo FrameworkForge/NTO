@@ -21,6 +21,7 @@ public struct PhotoMetadataInspector: View {
           if let exposure = photo.exposure { Text(exposure).font(.caption) }
           if let captured = photo.capturedAt { Text(captured).font(.caption) }
           if !photo.caption.isEmpty { Text(photo.caption).font(.callout).textSelection(.enabled) }
+          PhotoMetadataEditor(library: library, photo: photo).id(photo.id)
           Divider()
           Text(photo.isReferenced ? "Referenced original" : "Studio-managed copy").font(.caption)
           if checking { ProgressView("Checking original…").controlSize(.small) }
@@ -37,7 +38,7 @@ public struct PhotoMetadataInspector: View {
               }
             }
           }
-          Text("Capture metadata is read-only. Ratings and metadata editing are not available yet.")
+          Text("Capture metadata is read-only. Ratings, flags, captions and keywords are saved locally.")
             .font(.caption).foregroundStyle(.secondary)
         } else { Text("No photograph selected").foregroundStyle(.secondary) }
       }.frame(maxWidth: .infinity, alignment: .leading).padding(20)
