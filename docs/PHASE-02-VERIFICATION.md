@@ -13,7 +13,7 @@ Final ordinary run: **14 behavior tests passed, 2 optional fixture generators sk
 - Changed reference contents cannot produce a new preview under the old identity. Derived disk cache stays within its configured byte budget.
 - Crash recovery preserves committed managed directories and unrelated folders. Managed paths cannot traverse outside the Originals directory.
 - Selection range/toggle semantics, project-specific state, and foundation-to-Library schema migration are verified.
-- A 10,000-record file-backed database is opened and selected without loading image pixels. The measured record-load time was approximately 0.94-0.98 seconds in Debug on this Mac; the regression threshold is 5 seconds. This measures records, not RAW decoding throughput.
+- A 10,000-record file-backed database is opened and selected without loading image pixels. The measured record-load time was approximately 0.94-0.98 seconds in Debug on this Mac; the regression threshold is 5 seconds locally and 20 seconds on hosted CI runners, which measured about 6.3 seconds on GitHub's macOS runner. This measures records, not RAW decoding throughput.
 - The unsigned native application builds successfully. Optional manual fixture/stress generators are separate test helpers and are skipped during ordinary test runs.
 
 Commands: `./scripts/pnpm test:studio` and `./scripts/pnpm build:studio`. The existing native CI job runs the expanded package suite; this document does not claim a new hosted CI pass.

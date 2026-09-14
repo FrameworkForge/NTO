@@ -32,7 +32,7 @@ Studio is the client of the future Cloud, so its sign-in, upload and sync code w
 | No secrets, hosted credentials, signing material or personal photographs in the tree or history | Checked: none found |
 | No personal filesystem paths or machine-specific assumptions in tracked files | Done; machine notes live in the git-ignored `CLAUDE.local.md` |
 | Feature scope of the recommended v0.1 milestone (§28) exists in code | Done and locally verified (see [STATUS.md](STATUS.md)) |
-| Studio CI job on a valid hosted label (`macos-26`) | Defined; never executed on GitHub yet |
+| Studio CI job on a valid hosted label (`macos-26`) | Runs on GitHub; the web and Cloud jobs pass. The Studio job failed once on a 10,000-record timing assertion that the hosted runner cannot meet; the budget is now environment-aware |
 
 ## Owner decisions still required
 
@@ -49,7 +49,7 @@ Studio is the client of the future Cloud, so its sign-in, upload and sync code w
 2. Write a Studio-focused README and a Studio-only CI workflow; drop the Cloud and web jobs and the container scripts.
 3. Add LICENSE and the package manifest `license` fields.
 4. Point this repository at the published contracts package and keep the drift check.
-5. Run CI green on GitHub, then have a second person clone, build, import, edit and export following SETUP.md.
+5. Confirm CI green on GitHub for the Studio job, then have a second person clone, build, import, edit and export following SETUP.md.
 6. Tag `v0.1.0` after real-shoot validation and the live UI checks listed in the Phase 05–07 records.
 
 ## Not required, but worth knowing

@@ -2,7 +2,7 @@
 
 Snapshot as of 14 September 2026, after Phases 01–07. This page summarises what the code does today and what remains, drawn from the phase verification records and the [build roadmap](BUILD-ROADMAP.md). Update it whenever a phase or checklist item changes; it is a summary, not a replacement for the per-phase evidence.
 
-Status is **local verification on Apple silicon**. Remote CI has not run on a hosted runner, no hosted Supabase or Vercel project exists, and no distribution build is signed.
+Status is **local verification on Apple silicon**. GitHub Actions runs on push: the web and Cloud jobs pass on hosted runners; the Studio job's timing budget is now environment-aware after failing on the slower hosted Mac. No hosted Supabase or Vercel project exists, and no distribution build is signed.
 
 ## Implemented
 
@@ -88,7 +88,7 @@ Automated coverage: 48 Swift tests (46 behavioural, 2 opt-in fixture generators)
 
 - [ ] Camera matrix beyond one CR2: RAW colour and exposure quality, CR3, mixed-camera performance, full-shoot throughput.
 - [ ] Colour-critical output, HDR and wide-gamut export are not claimed.
-- [ ] Remote GitHub Actions run on a macOS 26 runner (definitions exist; never executed remotely).
+- [ ] A green Studio job on GitHub's macOS 26 runner after the timing-budget change (web and Cloud jobs already pass remotely).
 - [ ] Intel and Release/distribution builds; signing and notarization.
 - [ ] Persistent render disk cache (only an in-memory encoded cache exists).
 
