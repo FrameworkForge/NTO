@@ -2,6 +2,8 @@ import AppKit
 import SwiftUI
 import UniformTypeIdentifiers
 
+/// The contact sheet: a pop-up row, then square tiles with a flag dot and stars. Selection, keyboard navigation,
+/// scroll position and density persist per project as before.
 public struct PhotoLibraryGrid: View {
   @Bindable var library: LibraryController
   let onOpen: () -> Void
@@ -14,28 +16,20 @@ public struct PhotoLibraryGrid: View {
   public var body: some View {
     VStack(spacing: 0) {
       if !isFocused {
-      LibraryOrganisationBar(library: library)
-      HStack {
-        Text("\(library.visiblePhotos.count) of \(library.photos.count) photographs · \(library.browsing.selectedIDs.count) selected")
-          .font(.caption).foregroundStyle(.secondary)
-        Spacer()
-        PhotoRatingControls(library: library)
-        Image(systemName: "square.grid.3x3").accessibilityHidden(true)
-        Slider(value: Binding(get: { library.browsing.density }, set: { library.setDensity($0) }), in: 100...280)
-          .frame(width: 100).accessibilityLabel("Thumbnail size")
-      }.padding(.horizontal, 20).padding(.vertical, 12)
+        LibraryToolbarRow(library: library)
+        Divider()
       }
       GeometryReader { geometry in
         ScrollView {
-          LazyVGrid(columns: [GridItem(.adaptive(minimum: library.browsing.density), spacing: 12)], spacing: 16) {
+          LazyVGrid(columns: [GridItem(.adaptive(minimum: library.browsing.density), spacing: 8)], spacing: 8) {
             ForEach(library.visiblePhotos) { photo in
               tile(photo).id(photo.id)
             }
-          }.scrollTargetLayout().padding(20)
+          }.scrollTargetLayout().padding(16)
         }
         .overlay {
           if library.visiblePhotos.isEmpty {
-            ContentUnavailableView("No matching photographs", systemImage: "line.3.horizontal.decrease", description: Text("Change your filters or choose another collection."))
+            ContentUnavailableView("No matching photographs", systemImage: "line.3.horizontal.decrease", description: Text("Change what is shown, clear the filters, or choose another collection."))
           }
         }
         .scrollPosition(id: $scrollID, anchor: .top)
@@ -45,7 +39,7 @@ public struct PhotoLibraryGrid: View {
         .focusable().focused($gridFocused).focusEffectDisabled()
         .onKeyPress(keys: [.leftArrow, .rightArrow, .upArrow, .downArrow, .return]) { press in
           if press.key == .return { if library.activePhoto != nil { onOpen() }; return .handled }
-          let columns = max(1, Int((geometry.size.width - 40) / (library.browsing.density + 12)))
+          let columns = max(1, Int((geometry.size.width - 32) / (library.browsing.density + 8)))
           let delta = press.key == .leftArrow ? -1 : press.key == .rightArrow ? 1 : press.key == .upArrow ? -columns : columns
           let ids = library.visiblePhotos.map(\.id)
           guard !ids.isEmpty else { return .ignored }
@@ -64,31 +58,37 @@ public struct PhotoLibraryGrid: View {
     }
   }
   private func tile(_ photo: PhotoRecord) -> some View {
-              Button {
-                let flags = NSEvent.modifierFlags
-                library.select(photo.id, extend: flags.contains(.shift), toggle: flags.contains(.command))
-                gridFocused = true
-              } label: {
-                VStack(alignment: .leading, spacing: 6) {
-                  PhotoThumbnail(photo: photo, previews: library.previews)
-                    .frame(height: library.browsing.density * 0.8)
-                  if !isFocused {
-                    Text(photo.filename).font(.caption).lineLimit(1).foregroundStyle(.primary)
-                    Text("\(String(repeating: "★", count: photo.rating)) \(photo.flag == .none ? "" : photo.flag.rawValue.capitalized) \(photo.isFavourite ? "♥" : "")")
-                      .font(.caption2).foregroundStyle(.secondary)
-                  }
-                }.padding(5).overlay {
-                  RoundedRectangle(cornerRadius: 3).stroke(
-                    library.browsing.selectedIDs.contains(photo.id) ? Color.white : Color.clear, lineWidth: 2)
-                }.contentShape(Rectangle())
-              }.buttonStyle(.plain)
-                .accessibilityLabel(photo.filename)
-                .accessibilityValue(library.browsing.selectedIDs.contains(photo.id) ? "Selected" : "Not selected")
-                .accessibilityAddTraits(library.browsing.selectedIDs.contains(photo.id) ? [.isSelected] : [])
-                .contextMenu {
-                  Button("View photograph") { library.select(photo.id); onOpen() }
-                }
-                .simultaneousGesture(TapGesture(count: 2).onEnded { _ in library.select(photo.id); onOpen() })
+    let selected = library.browsing.selectedIDs.contains(photo.id)
+    return Button {
+      let flags = NSEvent.modifierFlags
+      library.select(photo.id, extend: flags.contains(.shift), toggle: flags.contains(.command))
+      gridFocused = true
+    } label: {
+      PhotoThumbnail(photo: photo, previews: library.previews)
+        .frame(height: library.browsing.density * 0.75)
+        .clipShape(.rect(cornerRadius: 4))
+        .overlay(alignment: .topLeading) { FlagDot(flag: photo.flag).padding(8) }
+        .overlay(alignment: .bottomLeading) {
+          if photo.rating > 0 || photo.isFavourite {
+            Text((photo.rating > 0 ? String(repeating: "★", count: photo.rating) : "") + (photo.isFavourite ? " ♥" : ""))
+              .font(.caption2).foregroundStyle(.white).shadow(radius: 2).padding(8)
+          }
+        }
+        .overlay { RoundedRectangle(cornerRadius: 4).stroke(selected ? Color.white : Color.clear, lineWidth: 3) }
+        .contentShape(Rectangle())
+    }.buttonStyle(.plain)
+      .accessibilityLabel(photo.filename)
+      .accessibilityValue("\(photo.rating) stars\(photo.flag == .none ? "" : ", \(photo.flag.rawValue)")\(selected ? ", selected" : "")")
+      .accessibilityAddTraits(selected ? [.isSelected] : [])
+      .help(photo.filename)
+      .contextMenu {
+        Button("View photograph") { library.select(photo.id); onOpen() }
+        Menu("Add to collection") {
+          ForEach(library.collections) { collection in
+            Button(collection.title) { library.select(photo.id); library.collect(in: collection.id, included: true) }
+          }
+        }.disabled(library.collections.isEmpty)
+      }
+      .simultaneousGesture(TapGesture(count: 2).onEnded { _ in library.select(photo.id); onOpen() })
   }
-
 }

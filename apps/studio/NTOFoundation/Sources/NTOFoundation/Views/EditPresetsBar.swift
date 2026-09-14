@@ -2,8 +2,8 @@ import AppKit
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// Presets, copy/paste and selection sync for Edit mode. Hovering a preset previews it; clicking applies it as one undo step.
-struct EditPresetsBar: View {
+/// Presets, copy/paste and selection sync as inspector sections. Choosing a preset applies it as one undo step.
+struct EditPresetsSection: View {
   let library: LibraryController
   private var editor: EditController { library.editor }
   private var presets: PresetStore { library.presets }
@@ -15,51 +15,57 @@ struct EditPresetsBar: View {
   @State private var error: String?
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 8) {
-      HStack(spacing: 8) {
-        Text("Presets").font(.headline)
-        ScrollView(.horizontal, showsIndicators: false) {
-          HStack(spacing: 6) {
-            if presets.presets.isEmpty { Text("None saved yet").font(.caption).foregroundStyle(.secondary) }
-            ForEach(presets.presets) { preset in
-              Button(preset.name) { editor.apply(preset.adjustments) }
-                .controlSize(.small).disabled(editor.history == nil)
-                .help(preset.parameters.map(\.title).sorted().joined(separator: ", "))
-                .onHover { hovering in
-                  if hovering { editor.previewAdjustments(preset.adjustments) } else { editor.clearAdjustmentPreview() }
-                }
-                .contextMenu {
+    Section {
+      LabeledContent("Preset") {
+        Menu {
+          if presets.presets.isEmpty { Text("No presets saved yet") }
+          ForEach(presets.presets) { preset in
+            Button(preset.name) { editor.apply(preset.adjustments) }
+              .help(preset.parameters.map(\.title).sorted().joined(separator: ", "))
+          }
+          Divider()
+          Button("Save Preset…") { savingPreset = true }.disabled(editor.history == nil)
+          if !presets.presets.isEmpty {
+            Menu("Manage") {
+              ForEach(presets.presets) { preset in
+                Menu(preset.name) {
                   Button("Rename…") { renaming = preset; renameText = preset.name }
                   Button("Export…") { exportPreset(preset) }
                   Divider()
-                  Button("Delete preset", role: .destructive) { attempt { try presets.delete(preset.id) } }
+                  Button("Delete", role: .destructive) { attempt { try presets.delete(preset.id) } }
                 }
+              }
             }
           }
-        }
-        Button("Save preset…") { savingPreset = true }.controlSize(.small).disabled(editor.history == nil)
-        Menu {
-          Button("Import preset…") { importPreset() }
-          Button("Show Presets folder") { NSWorkspace.shared.activateFileViewerSelecting([presets.directory]) }
-        } label: { Image(systemName: "ellipsis.circle") }.menuStyle(.borderlessButton).frame(width: 28)
-          .accessibilityLabel("More preset actions")
+          Button("Import Preset…") { importPreset() }
+          Button("Show Presets Folder") { NSWorkspace.shared.activateFileViewerSelecting([presets.directory]) }
+        } label: { Text("Choose") }
+          .fixedSize().accessibilityLabel("Presets")
       }
-      HStack(spacing: 8) {
-        Button("Copy edits…") { copying = true }.controlSize(.small).disabled(editor.history == nil)
-        Button("Paste edits") { editor.paste() }.controlSize(.small).disabled(editor.copied == nil || editor.history == nil)
-        Button("Sync to \(library.actionableIDs.count) selected") { library.syncEdits(editor.copied ?? [:], to: library.actionableIDs) }
-          .controlSize(.small).disabled(editor.copied == nil || library.actionableIDs.isEmpty || batch.isRunning)
-          .help("Applies the copied parameters to every selected photograph. Each one gets its own undo step.")
-        Button("Revert sync") { library.revertLastSync() }.controlSize(.small)
-          .disabled(batch.lastOutcomes.isEmpty || batch.isRunning)
-        if batch.isRunning {
-          ProgressView(value: Double(batch.completed), total: Double(max(batch.total, 1))).frame(width: 90)
-          Text("\(batch.completed)/\(batch.total)").font(.caption).monospacedDigit()
-          Button("Stop") { batch.cancel() }.controlSize(.small)
-        } else if let summary = batch.summary {
-          Text(summary).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+      LabeledContent("Edits") {
+        HStack(spacing: 6) {
+          Button("Copy…") { copying = true }.disabled(editor.history == nil)
+          Button("Paste") { editor.paste() }.disabled(editor.copied == nil || editor.history == nil)
+        }.controlSize(.small)
+      }
+      LabeledContent("Sync") {
+        VStack(alignment: .trailing, spacing: 4) {
+          HStack(spacing: 6) {
+            Button("To \(library.actionableIDs.count) Selected") { library.syncEdits(editor.copied ?? [:], to: library.actionableIDs) }
+              .disabled(editor.copied == nil || library.actionableIDs.isEmpty || batch.isRunning)
+              .help("Applies the copied parameters to every selected photograph. Each one gets its own undo step.")
+            Button("Revert") { library.revertLastSync() }.disabled(batch.lastOutcomes.isEmpty || batch.isRunning)
+          }.controlSize(.small)
+          if batch.isRunning {
+            HStack(spacing: 6) {
+              ProgressView(value: Double(batch.completed), total: Double(max(batch.total, 1))).frame(width: 80)
+              Text("\(batch.completed)/\(batch.total)").font(.caption).monospacedDigit()
+              Button("Stop") { batch.cancel() }.controlSize(.mini)
+            }
+          } else if let summary = batch.summary {
+            Text(summary).font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.trailing)
+          }
         }
-        Spacer()
       }
       if let error { Text(error).font(.caption).foregroundStyle(.red) }
       if !presets.issues.isEmpty {
@@ -68,9 +74,9 @@ struct EditPresetsBar: View {
       if !batch.failures.isEmpty {
         Text(batch.failures.prefix(3).joined(separator: "; ")).font(.caption).foregroundStyle(.secondary)
       }
-    }
+    } header: { Text("Presets") }
     .sheet(isPresented: $savingPreset) {
-      ParameterSelectionSheet(title: "Save preset", confirmTitle: "Save", askName: true) { name, parameters in
+      ParameterSelectionSheet(title: "Save Preset", confirmTitle: "Save", askName: true) { name, parameters in
         attempt {
           guard let recipe = editor.history?.current else { return }
           try presets.save(EditPreset(name: name, adjustments: recipe.adjustments(for: parameters)))
@@ -78,13 +84,13 @@ struct EditPresetsBar: View {
       }
     }
     .sheet(isPresented: $copying) {
-      ParameterSelectionSheet(title: "Copy edits", confirmTitle: "Copy", askName: false) { _, parameters in
+      ParameterSelectionSheet(title: "Copy Edits", confirmTitle: "Copy", askName: false) { _, parameters in
         editor.copy(parameters)
       }
     }
     .sheet(item: $renaming) { preset in
       VStack(alignment: .leading, spacing: 14) {
-        Text("Rename preset").font(.headline)
+        Text("Rename Preset").font(.headline)
         TextField("Preset name", text: $renameText).textFieldStyle(.roundedBorder)
         HStack {
           Button("Cancel") { renaming = nil }.keyboardShortcut(.cancelAction)

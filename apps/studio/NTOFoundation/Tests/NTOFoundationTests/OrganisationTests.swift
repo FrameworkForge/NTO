@@ -146,3 +146,27 @@ final class OrganisationTests: XCTestCase {
     let cacheSize = try await previews.cachedByteCount(); XCTAssertEqual(cacheSize, 0)
   }
 }
+
+extension OrganisationTests {
+  func testShowFilterMapsToAndFromQueriesWithoutTouchingSearchOrSort() {
+    var query = LibraryQuery(); query.text = "stair"; query.sort = .rating; query.camera = "Canon"
+    XCTAssertEqual(LibraryShowFilter.current(in: query), .all)
+    for filter in LibraryShowFilter.allCases {
+      let applied = filter.applied(to: query)
+      XCTAssertEqual(LibraryShowFilter.current(in: applied), filter, filter.title)
+      XCTAssertEqual(applied.text, "stair"); XCTAssertEqual(applied.sort, .rating); XCTAssertEqual(applied.camera, "Canon")
+    }
+    let photos = [
+      PhotoRecord(id: UUID(), fingerprint: "a", filename: "a.jpg", mediaType: "public.jpeg", width: 1, height: 1, byteCount: 1, rating: 0, flag: .pick),
+      PhotoRecord(id: UUID(), fingerprint: "b", filename: "b.jpg", mediaType: "public.jpeg", width: 1, height: 1, byteCount: 1, rating: 4, flag: .none, isFavourite: true),
+      PhotoRecord(id: UUID(), fingerprint: "c", filename: "c.jpg", mediaType: "public.jpeg", width: 1, height: 1, byteCount: 1, rating: 2, flag: .reject),
+    ]
+    let base = LibraryQuery()
+    XCTAssertEqual(LibraryShowFilter.picks.applied(to: base).apply(to: photos).map(\.filename), ["a.jpg"])
+    XCTAssertEqual(LibraryShowFilter.rejects.applied(to: base).apply(to: photos).map(\.filename), ["c.jpg"])
+    XCTAssertEqual(LibraryShowFilter.favourites.applied(to: base).apply(to: photos).map(\.filename), ["b.jpg"])
+    XCTAssertEqual(LibraryShowFilter.rated.applied(to: base).apply(to: photos).map(\.filename), ["b.jpg"])
+    XCTAssertEqual(LibraryShowFilter.unrated.applied(to: base).apply(to: photos).map(\.filename), ["a.jpg"])
+    XCTAssertEqual(LibraryShowFilter.all.applied(to: LibraryShowFilter.unrated.applied(to: base)).apply(to: photos).count, 3)
+  }
+}
