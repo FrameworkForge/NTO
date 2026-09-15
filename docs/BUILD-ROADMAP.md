@@ -31,7 +31,7 @@ Optics, client selections, version history, sports/school features, team product
 
 ## Where we are now
 
-**Phases 01–07 are implemented and locally verified, with verification limits recorded. The local import → cull → edit → export workflow now exists in code, including the crop tool, eyedropper and 100% inspection; live verification with real shoots (release stage 2) is the next gate before any Cloud phase.**
+**Phases 01–07 are implemented and locally verified, with verification limits recorded. The local import → cull → edit → export workflow now exists in code, including the crop tool, eyedropper and 100% inspection; live verification with real shoots (release stage 2) is the next gate before any Cloud phase. The Studio workspace and the nto.motion site were rebuilt from the Claude Design mockups on 14 September 2026 ([Studio](STUDIO-NATIVE-UI.md), [site](WEB-SITE-DESIGN.md)); that delivered the presentation half of several Phase 10–11 tasks early, against fixtures, as noted on those tasks.**
 
 Studio now imports photographs, persists local asset identities and project memberships, and provides a thumbnail Library with metadata and original previews. Collections, saved filters, editable metadata and keyboard culling now work locally. Edit now renders originals through saved recipes with undo/redo, grouped Light/Colour/Detail/Geometry controls with numeric entry, white balance, rotation, numeric crop and compare-with-original. The website shells, shared models, and local Supabase infrastructure also exist. Local verification is documented in [Phase 05 verification](PHASE-05-VERIFICATION.md), [Phase 04 verification](PHASE-04-VERIFICATION.md) and the historical [foundation record](VERIFICATION.md). The code lives on `main` in the [Nathan-Olivier/NTO repository](https://github.com/Nathan-Olivier/NTO). A split that publishes Studio and the shared contracts separately as open source is proposed; see [open-source readiness](OPEN-SOURCE-READINESS.md).
 
@@ -244,13 +244,13 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 
 **Depends on:** Phases 08-09.
 
-- [ ] Build the Studio Gallery publish flow for selection, title, date, cover, visibility, password, and download policy.
+- [ ] Build the Studio Gallery publish flow for selection, title, date, cover, visibility, password, and download policy. *Studio has a draft Publish form against the Publication contract (cover choice is real; Publish is disabled until Cloud exists).*
 - [ ] Store Gallery documents and ordered asset relationships, with unmistakable draft and published states.
 - [ ] Publish only after required uploads/renditions are available, and return a stable shareable URL.
 - [ ] Replace fixture-only Gallery data with authorized Cloud data.
-- [ ] Implement the hero/title/date/count entry and Enter Gallery action, with a fast path for repeat visits.
-- [ ] Build responsive editorial compositions that respect aspect ratios and reserve image dimensions before loading.
-- [ ] Complete the fullscreen viewer: spatial opening/closing with fallback, arrows/swipe, Escape, neighbour preloading, and usable controls that recede when idle.
+- [ ] Implement the hero/title/date/count entry and Enter Gallery action, with a fast path for repeat visits. *Presentation built against fixtures (landing project section with title, year, count and Enter gallery); real data and the repeat-visit path await Cloud.*
+- [ ] Build responsive editorial compositions that respect aspect ratios and reserve image dimensions before loading. *Fixture gallery grid and story figures reserve dimensions; real renditions await Phase 09.*
+- [ ] Complete the fullscreen viewer: spatial opening/closing with fallback, arrows/swipe, Escape, neighbour preloading, and usable controls that recede when idle. *Immersive dialog viewer with index rail, arrows, Escape, click zones, caption and progress exists on fixtures; swipe, preloading and receding controls remain.*
 - [ ] Add permitted single/set downloads, resolution choices, ZIP progress, and clean view-only behavior.
 - [ ] Implement the on-brand password screen and verify policies cannot be bypassed through direct asset requests.
 
@@ -264,8 +264,8 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 
 **Depends on:** Cloud publication/delivery from Phases 08-10. Editorial layout can be prototyped earlier against fixtures.
 
-- [ ] Complete the nto.motion landing: wordmark, restrained O photo reveal, identity line, and immediate accessible content when motion is disabled or unavailable.
-- [ ] Build the real project index with covers, titles, year/category, and readable touch/keyboard alternatives to hover.
+- [ ] Complete the nto.motion landing: wordmark, restrained O photo reveal, identity line, and immediate accessible content when motion is disabled or unavailable. *Cinematic landing built on fixtures with wordmark, identity line, hero, marquee, project sequence and Studio pipeline; content is immediate with reduced motion. The O reveal and real projects remain.*
+- [ ] Build the real project index with covers, titles, year/category, and readable touch/keyboard alternatives to hover. *Data-driven project sequence with cover, title, year and kicker exists; it lists the one fixture project until publishing supplies real ones.*
 - [ ] Persist structured story blocks for full-width frames, portrait pairs, details, whitespace, typography, and optional project statements.
 - [ ] Preserve authored sequence and hierarchy across mobile and desktop.
 - [ ] Implement discoverable portfolio Focus Mode without trapping focus or interfering with text selection/browser navigation.
