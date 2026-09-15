@@ -32,7 +32,7 @@ This is an implementation priority, not a calendar estimate. Bug fixes can inter
 - [x] Close and reopen with the same photographic edit state (current Phase 04 controls).
 - [x] Apply/revert presets and parameter-selective batch edits (Phase 06; live UI check still open).
 - [x] Export correct JPEG files that open outside NTO (Phase 07; verified by ImageIO and by Pillow's libjpeg/libtiff decoders with dimensions and metadata checks).
-- [ ] Recover from unavailable originals, interrupted operations, and rendering/export failures without losing work.
+- [ ] Recover from unavailable originals, interrupted operations, and rendering/export failures without losing work. *Automated on 15 September 2026 as one chained workflow (`RecoveryTests`): a missing managed original fails render and export for that photograph only while its edits keep saving, restoring the bytes recovers it; a same-volume move of a referenced original is followed by its bookmark with no action needed, a deleted one is reported, wrong content is refused, relinking to identical content recovers it; a corrupt edit journal is reported and left untouched while other photographs export; everything persists across reopening. Real interruptions (force quit mid-import or mid-export, drive removal) remain hands-on.*
 - [ ] Another developer can clone, build, open a photograph, edit, and export using documented prerequisites.
 
 Existing local verification is a baseline, not a claim that all camera models or distribution configurations are certified. Use generated fixtures for automated tests; do not commit the owner's photographs.

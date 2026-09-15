@@ -7,7 +7,7 @@ Implemented 14 September 2026 from the Claude Design mockup **nto.motion — Sit
 | Route | Implementation |
 | --- | --- |
 | Header (all pages) | Fixed over the page and inverted against the photograph with `mix-blend-mode: difference`; wordmark, Selected work, Studio, identity line. The skip link is unchanged. |
-| `/` hero | Full-viewport section: fixture study with a slow Ken Burns drift under a gradient, eyebrow, "The space between." unmasked line by line, intro and an "Explore selected work" cue. Without `NTO_DEMO` the hero is typography only. |
+| `/` hero | Full-viewport section: fixture study revealed once through a widening circle (the O motif) then drifting slowly under a gradient, eyebrow, "The space between." unmasked line by line, intro and an "Explore selected work" cue. Without `NTO_DEMO` the hero is typography only. |
 | `/` marquee | A looping strip of "Photography · Software · Motion · Shoot → … → Deliver", decorative and hidden from assistive tech. |
 | `/` Selected work | Header with a dynamic count (the fixture yields "001 project"; without fixtures the empty state remains), then one sticky full-viewport section per project: cover with a scroll-linked drift, kicker and year, index, title (links to the story), description, photograph count and "Enter gallery ↗" (links to the gallery). |
 | `/` Studio | "One photograph. One ecosystem." beside a seven-step pipeline whose states are truthful: Shoot Yours, Import/Cull/Edit Studio, Publish Coming, Sell/Deliver Later. |

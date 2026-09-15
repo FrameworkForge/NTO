@@ -264,7 +264,7 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 
 **Depends on:** Cloud publication/delivery from Phases 08-10. Editorial layout can be prototyped earlier against fixtures.
 
-- [ ] Complete the nto.motion landing: wordmark, restrained O photo reveal, identity line, and immediate accessible content when motion is disabled or unavailable. *Cinematic landing built on fixtures with wordmark, identity line, hero, marquee, project sequence and Studio pipeline; content is immediate with reduced motion. The O reveal and real projects remain.*
+- [ ] Complete the nto.motion landing: wordmark, restrained O photo reveal, identity line, and immediate accessible content when motion is disabled or unavailable. *Cinematic landing built on fixtures with wordmark, identity line, a circular O reveal of the hero photograph, marquee, project sequence and Studio pipeline; content is immediate with reduced motion. Real projects remain.*
 - [ ] Build the real project index with covers, titles, year/category, and readable touch/keyboard alternatives to hover. *Data-driven project sequence with cover, title, year and kicker exists; it lists the one fixture project until publishing supplies real ones.*
 - [ ] Persist structured story blocks for full-width frames, portrait pairs, details, whitespace, typography, and optional project statements.
 - [ ] Preserve authored sequence and hierarchy across mobile and desktop.

@@ -24,7 +24,7 @@ Status is **local verification on Apple silicon**. GitHub Actions runs on push: 
 | Export | Shift-Cmd-E or the header button exports the selection: JPEG with quality or TIFF, original size or fit longest edge, filename templates with a live example, metadata policy (none, caption and keywords, camera data) with location opt-in, skip/keep both/replace, background queue with progress, Stop, per-file failures and Show in Finder; settings persist | [Phase 07](PHASE-07-VERIFICATION.md) |
 | Verified files | Generated JPEG/HEIC/TIFF fixtures in tests; one owner Canon EOS 5D Mark IV CR2 developed at neutral settings | Phase 02, Phase 04 |
 
-Automated coverage: 51 Swift tests (47 behavioural, 4 opt-in generators for fixtures, a stress library, a demo library and export samples), unsigned Debug build via `xcodebuild`.
+Automated coverage: 52 Swift tests (48 behavioural, 4 opt-in generators for fixtures, a stress library, a demo library and export samples), unsigned Debug build via `xcodebuild`.
 
 ### Shared contracts and tokens
 
@@ -57,7 +57,7 @@ Automated coverage: 51 Swift tests (47 behavioural, 4 opt-in generators for fixt
 - [ ] Edit RAW/JPEG with the full v0.1 tool set without changing originals. Every Phase 05 tool is implemented; live verification on real photographs remains.
 - [x] Presets and parameter-selective batch edits (Phase 06); live UI verification still open.
 - [x] JPEG export that opens correctly outside NTO (Phase 07; verified by ImageIO and by Pillow's libjpeg/libtiff decoders).
-- [ ] Recovery from unavailable originals, interrupted operations and render/export failures across the whole workflow.
+- [ ] Recovery from unavailable originals, interrupted operations and render/export failures across the whole workflow. *Automated chained scenario passes (`RecoveryTests`); force-quit and drive-removal cases remain hands-on.*
 - [ ] Clean-checkout clone, build, open, edit, export by another developer following the documented prerequisites.
 
 ### Phase 05: core editing experience (implemented)

@@ -37,6 +37,8 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  /* The O motif: the photograph is revealed through a widening circle, once, and never blocks the text. */
+  animation: oReveal 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 .heroImage {
   width: 100%;
@@ -663,6 +665,10 @@
   transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+@keyframes oReveal {
+  from { clip-path: circle(0% at 50% 45%); }
+  to { clip-path: circle(120% at 50% 45%); }
+}
 @keyframes kenburns {
   from { transform: scale(1.06) translate(0, 0); }
   to { transform: scale(1.18) translate(-1.5%, -1%); }
