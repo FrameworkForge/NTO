@@ -180,6 +180,23 @@ final class CropAndSamplingTests: XCTestCase {
     XCTAssertEqual(editor.fullImage?.width, 80, "Inspection follows recipe changes"); XCTAssertEqual(editor.fullImage?.height, 60)
     editor.setInspecting(false)
     XCTAssertNil(editor.fullImage)
+
+    // Refinement after expensive interactions: no full render while a gesture is in progress, one when it ends.
+    editor.setInspecting(true)
+    await editor.waitForFullResolution()
+    let before = editor.fullImage
+    editor.beginGesture()
+    editor.set(\.exposure, value: 0.5)
+    editor.set(\.exposure, value: 0.8)
+    XCTAssertTrue(editor.fullResolutionPending, "Full render is deferred during the gesture")
+    XCTAssertFalse(editor.isRenderingFull)
+    XCTAssertTrue(editor.fullImage === before, "The previous full image stays visible while dragging")
+    editor.finishGesture()
+    XCTAssertFalse(editor.fullResolutionPending)
+    XCTAssertTrue(editor.isRenderingFull, "One full render starts when the gesture ends")
+    await editor.waitForFullResolution()
+    XCTAssertFalse(editor.fullImage === before)
+    editor.setInspecting(false)
     editor.setInspecting(true); editor.beginCrop()
     XCTAssertFalse(editor.isInspecting, "Cropping leaves inspection")
     editor.cancelCrop()

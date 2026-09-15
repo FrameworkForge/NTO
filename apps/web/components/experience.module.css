@@ -492,6 +492,26 @@
 .viewer[open] {
   animation: viewerIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+/* Controls recede when idle so the photograph stands alone; any pointer, key or focus activity brings them back. */
+.viewerRail,
+.viewerHeader,
+.viewerFoot,
+.viewerProgress {
+  transition: opacity var(--motion-reveal) ease-out;
+}
+.viewer[data-idle="true"] .viewerRail,
+.viewer[data-idle="true"] .viewerHeader,
+.viewer[data-idle="true"] .viewerFoot,
+.viewer[data-idle="true"] .viewerProgress {
+  opacity: 0;
+}
+.viewer[data-idle="true"] :focus-visible {
+  opacity: 1;
+}
+.viewerCanvas {
+  touch-action: pan-y;
+  user-select: none;
+}
 .viewer::backdrop {
   background: black;
 }

@@ -34,6 +34,9 @@ import UniformTypeIdentifiers
   public private(set) var sampleError: String?
   private var adjustmentPreviewTask: Task<Void, Never>?
   private var fullTask: Task<Void, Never>?
+  private var inGesture = false
+  /// True while a full-resolution refresh is deferred until the current slider gesture ends.
+  public private(set) var fullResolutionPending = false
   private var fullRequestID = UUID()
   private let store: ProjectStore
   private let locations: LibraryLocations
@@ -61,8 +64,11 @@ import UniformTypeIdentifiers
     do { history = try store.edits(for: photo.id); requestPreview() }
     catch { loadError = "Saved edits could not open: \(error). Your saved data has been kept." }
   }
-  public func beginGesture() { history?.beginGesture() }
-  public func finishGesture() { history?.endGesture(); save() }
+  public func beginGesture() { inGesture = true; history?.beginGesture() }
+  public func finishGesture() {
+    inGesture = false; history?.endGesture(); save()
+    if fullResolutionPending { requestFullResolution() }
+  }
 
   /// Every recipe change flows through here: validate, record history, autosave, re-render.
   public func apply(_ change: (inout EditRecipe) -> Void) {
@@ -142,11 +148,15 @@ import UniformTypeIdentifiers
     guard inspecting != isInspecting else { return }
     isInspecting = inspecting
     if inspecting { cropSession = nil; requestFullResolution() }
-    else { fullTask?.cancel(); fullTask = nil; fullRequestID = UUID(); fullImage = nil; isRenderingFull = false }
+    else { fullTask?.cancel(); fullTask = nil; fullRequestID = UUID(); fullImage = nil; isRenderingFull = false; fullResolutionPending = false }
   }
+  /// Full-resolution renders are expensive, so during a slider gesture the previous full image stays visible and one
+  /// refresh runs when the gesture ends (the "refinement after expensive interactions" of Phase 05).
   public func requestFullResolution() {
-    fullTask?.cancel()
     guard isInspecting, let photo, let recipe = history?.current else { return }
+    if inGesture { fullResolutionPending = true; return }
+    fullTask?.cancel()
+    fullResolutionPending = false
     let id = UUID(); fullRequestID = id; isRenderingFull = true
     let renderer = renderer, locations = locations
     fullTask = Task { [weak self] in

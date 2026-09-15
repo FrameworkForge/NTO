@@ -13,7 +13,7 @@ Implemented 14 September 2026 from the Claude Design mockup **nto.motion — Sit
 | `/` Studio | "One photograph. One ecosystem." beside a seven-step pipeline whose states are truthful: Shoot Yours, Import/Cull/Edit Studio, Publish Coming, Sell/Deliver Later. |
 | `/` Closing | Fixture study behind a radial fade and "A place for the work to speak." with a link back to the work. |
 | `/projects/[slug]` | Full-bleed story hero (cover, kicker and year, title, description, Enter gallery), then the studies with alternating widths and captions. |
-| `/galleries/[slug]` | The editorial grid, then an immersive viewer: index rail (horizontal row on phones), title, live position, previous/next/close, click zones on either side of the image, caption, a progress bar, arrows and Escape. Focus returns to the opening tile. |
+| `/galleries/[slug]` | The editorial grid, then an immersive viewer: index rail (horizontal row on phones), title, live position, previous/next/close, click zones on either side of the image, caption, a progress bar, arrows and Escape. Horizontal swipe or drag on the photograph navigates; the neighbouring studies are preloaded so navigation never waits; the controls recede after 2.5 s without pointer, key or focus activity and return on any of them. Focus returns to the opening tile. |
 
 Motion uses the token durations and CSS scroll-driven animations (`animation-timeline: view()`), which are progressive enhancement; `prefers-reduced-motion` disables all animation and smooth scrolling as before.
 
@@ -28,5 +28,5 @@ Motion uses the token durations and CSS scroll-driven animations (`animation-tim
 ## Verification
 
 - `pnpm check` (typecheck, lint, contract tests, generated-file drift, production build) passes.
-- Playwright smoke tests pass on desktop and mobile; one assertion added for the pipeline list and one for the viewer's index rail.
+- Playwright smoke tests pass on desktop and mobile; assertions cover the pipeline list, the viewer's index rail, neighbour preloading, drag navigation, and the controls receding and returning.
 - Screenshots of the landing (hero, project, Studio), story, viewer, and the phone layouts were taken from a fixture server for a visual check.

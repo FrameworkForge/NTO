@@ -60,8 +60,8 @@ Not performed for this increment. The development machine had no Xcode selected 
 ## Not yet delivered (remaining Phase 05)
 
 - **Light**: Brilliance (deferred by the v0.1 reconciliation; would be another additive field).
-- **Detail**: refinement after expensive interactions (interactive previews render at 2,000 px; 100% inspection re-renders the full image on every change, which is slow on large RAW files).
 - **Geometry**: a draggable straighten interaction on the image (rotation is a slider with numeric entry; a level grid now overlays the canvas while the slider is dragged, added 15 September 2026).
+- **Detail**: done on 15 September 2026: during a slider gesture 100% inspection keeps the previous full-resolution image and renders once when the gesture ends, tested in `CropAndSamplingTests`.
 - Keyboard, resize and Focus Mode verification with real photographs, and the RAW eyedropper on a real camera file.
 
 The Light and Colour field set is settled for v0.1, and Phase 06 presets and Phase 07 export are built against it.

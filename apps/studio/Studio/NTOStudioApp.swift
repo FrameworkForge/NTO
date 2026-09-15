@@ -11,6 +11,7 @@ import SwiftUI
     // QA affordance: NTO_STUDIO_MODE=Library|Cull|Edit|Publish opens in that mode (used with NTO_STUDIO_LIBRARY_PATH).
     let initial = WorkspaceState()
     if let mode = ProcessInfo.processInfo.environment["NTO_STUDIO_MODE"].flatMap(StudioMode.init(rawValue:)) { initial.mode = mode }
+    if ProcessInfo.processInfo.environment["NTO_STUDIO_FOCUS"] == "1" { initial.toggleFocus() }
     _workspace = State(initialValue: initial)
     do {
       let override = ProcessInfo.processInfo.environment["NTO_STUDIO_LIBRARY_PATH"]

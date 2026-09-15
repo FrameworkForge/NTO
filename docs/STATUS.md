@@ -35,7 +35,7 @@ Automated coverage: 51 Swift tests (47 behavioural, 4 opt-in generators for fixt
 ### Web (nto.motion shells)
 
 - Next.js 16 portfolio, project-story and gallery routes in the cinematic layout from the design import ([WEB-SITE-DESIGN.md](WEB-SITE-DESIGN.md)): fixed blended header, full-viewport hero, marquee, sticky project sequence, Studio pipeline with truthful states, closing section; skip link, visible focus, reduced-motion handling, explicit empty/error/not-found states.
-- Fixture artwork opt-in via `NTO_DEMO=1`; immersive viewer with index rail, click zones, caption, progress bar, arrow navigation, Escape, and focus return.
+- Fixture artwork opt-in via `NTO_DEMO=1`; immersive viewer with index rail, click zones, swipe, neighbour preloading, receding controls, caption, progress bar, arrow navigation, Escape, and focus return.
 - Playwright desktop and mobile smoke tests; ESLint; production build; Vercel configuration prepared.
 
 ### Cloud (local Supabase foundation)
@@ -68,9 +68,11 @@ Automated coverage: 51 Swift tests (47 behavioural, 4 opt-in generators for fixt
 - [x] Highlights, Shadows, Whites, Blacks and Vibrance added to recipe v1 as defaulted fields, rendered and exposed as controls; older journals decode unchanged.
 - [x] Interactive crop tool with aspect presets, thirds guides, Return to commit and Escape to cancel.
 - [x] 100% inspection of the edited result inside Edit.
-- [ ] Brilliance (deferred by the v0.1 reconciliation); a straighten guide on the image.
+- [x] Straighten guide while rotating; 100% inspection refines once after a slider gesture.
+- [ ] Brilliance (deferred by the v0.1 reconciliation).
 - [x] Native workspace layout captured live in every mode against a synthetic library ([STUDIO-NATIVE-UI.md](STUDIO-NATIVE-UI.md)); a launch crash and a truncation were found and fixed.
-- [ ] Keyboard and Focus Mode interaction, real photographs, the RAW eyedropper on a real camera file, and manual pointer-drag acceptance open since Phase 04.
+- [x] Focus Mode layout captured live in Cull and Edit.
+- [ ] Keyboard interaction, real photographs, the RAW eyedropper on a real camera file, and manual pointer-drag acceptance open since Phase 04.
 
 ### Phase 06: presets and batch (implemented)
 

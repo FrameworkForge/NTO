@@ -150,12 +150,12 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 - [x] Build progressively disclosed Light, Colour, Detail, and Geometry controls with numeric entry, reset, and fine adjustment where appropriate.
 - [x] Implement Exposure, Brilliance, Contrast, Highlights, Shadows, Whites, and Blacks, including group reset. *All but Brilliance, which the Studio v0.1 reconciliation defers.*
 - [x] Implement Temperature, Tint, Vibrance, Saturation, and a white-balance eyedropper with preview and as-shot RAW reset. *RAW eyedropper path awaits a real-file check.*
-- [x] Implement sharpening and noise reduction with 100% inspection and refinement after expensive interactions. *100% re-renders the full image on each change; no separate refinement pass.*
+- [x] Implement sharpening and noise reduction with 100% inspection and refinement after expensive interactions. *During a slider gesture the previous full-resolution image stays visible; one full render runs when the gesture ends.*
 - [x] Implement free/aspect-ratio crop, 90-degree rotation, straightening, and temporary guides. Store normalized crop coordinates. *Straightening is the rotation slider with numeric entry; thirds guides show while dragging the crop.*
 - [x] Make Escape cancel a crop interaction and Enter commit it; keep geometry editable later.
 - [x] Connect every committed edit to undo/redo and recipe autosave.
 - [x] Add hold-to-view-original comparison using cached previews; restore the edited view on release without changing its recipe.
-- [ ] Verify Focus Mode, resizing, keyboard access, and photograph-first layout throughout editing. *Layout verified live in every mode on a synthetic library on 15 September 2026; Focus Mode and keyboard interaction still need a hands-on pass.*
+- [ ] Verify Focus Mode, resizing, keyboard access, and photograph-first layout throughout editing. *Layout and Focus Mode verified live in every mode on a synthetic library on 15 September 2026; keyboard interaction and resizing still need a hands-on pass.*
 
 **Verification so far:** [Phase 05 verification](PHASE-05-VERIFICATION.md).
 
@@ -250,7 +250,7 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 - [ ] Replace fixture-only Gallery data with authorized Cloud data.
 - [ ] Implement the hero/title/date/count entry and Enter Gallery action, with a fast path for repeat visits. *Presentation built against fixtures (landing project section with title, year, count and Enter gallery); real data and the repeat-visit path await Cloud.*
 - [ ] Build responsive editorial compositions that respect aspect ratios and reserve image dimensions before loading. *Fixture gallery grid and story figures reserve dimensions; real renditions await Phase 09.*
-- [ ] Complete the fullscreen viewer: spatial opening/closing with fallback, arrows/swipe, Escape, neighbour preloading, and usable controls that recede when idle. *Immersive dialog viewer with index rail, arrows, Escape, click zones, caption and progress exists on fixtures; swipe, preloading and receding controls remain.*
+- [ ] Complete the fullscreen viewer: spatial opening/closing with fallback, arrows/swipe, Escape, neighbour preloading, and usable controls that recede when idle. *Immersive dialog viewer with index rail, arrows, swipe, Escape, click zones, caption, progress, neighbour preloading and receding controls exists on fixtures; the spatial open/close transition and real renditions await Cloud.*
 - [ ] Add permitted single/set downloads, resolution choices, ZIP progress, and clean view-only behavior.
 - [ ] Implement the on-brand password screen and verify policies cannot be bypassed through direct asset requests.
 

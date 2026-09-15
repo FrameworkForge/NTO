@@ -71,7 +71,7 @@ NTO_STUDIO_LIBRARY_PATH=/private/tmp/nto-demo NTO_STUDIO_MODE=Edit <build>/NTOSt
 swiftc -O -o /tmp/qa-windowid scripts/qa-windowid.swift && screencapture -x -l "$(/tmp/qa-windowid | head -1 | cut -d' ' -f1)" studio.png
 ```
 
-The first builds an isolated library with two projects, eleven imported synthetic images (JPEG, HEIC, an orientation-6 TIFF), ratings, flags, favourites, keywords, two collections, a cover, a saved edit, a selection and two presets. `NTO_STUDIO_MODE` (`Library`, `Cull`, `Edit`, `Publish`) opens the app in that mode. The window helper prints the app's window number so `screencapture -l` captures only that window, which needs Screen Recording permission for the terminal.
+The first builds an isolated library with two projects, eleven imported synthetic images (JPEG, HEIC, an orientation-6 TIFF), ratings, flags, favourites, keywords, two collections, a cover, a saved edit, a selection and two presets. `NTO_STUDIO_MODE` (`Library`, `Cull`, `Edit`, `Publish`) opens the app in that mode and `NTO_STUDIO_FOCUS=1` starts it in Focus Mode. The window helper prints the app's window number so `screencapture -l` captures only that window, which needs Screen Recording permission for the terminal.
 
 For export verification with a non-Apple toolchain:
 
