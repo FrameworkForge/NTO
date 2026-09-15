@@ -267,6 +267,48 @@ final class PhotoLibraryTests: XCTestCase {
     }
     try store.context.save()
   }
+  /// Opt-in: builds a small, realistic isolated library for live UI checks (launch Studio with NTO_STUDIO_LIBRARY_PATH).
+  @MainActor func testCreateOptionalDemoLibrary() async throws {
+    guard let path = ProcessInfo.processInfo.environment["NTO_QA_DEMO_LIBRARY"] else { throw XCTSkip("Opt-in demo library generator") }
+    let root = URL(fileURLWithPath: path)
+    try? FileManager.default.removeItem(at: root)
+    try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+    let source = root.appendingPathComponent("source", isDirectory: true)
+    try FileManager.default.createDirectory(at: source, withIntermediateDirectories: true)
+    for i in 1...9 { try fixture(source.appendingPathComponent(String(format: "Study-%02d.jpg", i)), seed: i) }
+    try fixture(source.appendingPathComponent("Study-portrait.tiff"), type: .tiff, seed: 4, orientation: 6)
+    try fixture(source.appendingPathComponent("Study-heic.heic"), type: .heic, seed: 6)
+    let locations = LibraryLocations(root: root)
+    let store = try ProjectStore(container: ProjectStore.container(url: root.appendingPathComponent("Library.store")))
+    let second = try store.create(title: "Harbour studies")  // created first so the richer project is newest and opens by default
+    let project = try store.create(title: "Studies in light")
+    let library = LibraryController(store: store, locations: locations)
+    library.open(projectID: project.id)
+    library.startImport(urls: [source], projectID: project.id, storage: .copy, caption: "Development study")
+    await library.waitForImport()
+    XCTAssertEqual(library.photos.count, 11, library.issues.joined(separator: "; "))
+    let photos = library.photos
+    for (index, photo) in photos.enumerated() {
+      let flag: PhotoFlag = index % 4 == 0 ? .pick : index % 7 == 3 ? .reject : .none
+      try store.annotate([photo.id], rating: [0, 3, 2, 5, 4, 4, 1, 0, 3, 5, 2][index % 11], flag: flag, favourite: index % 5 == 1,
+        keywords: index % 2 == 0 ? ["study", "light"] : ["study", "concrete"])
+    }
+    let selects = try store.createCollection(title: "Selects", projectID: project.id)
+    try store.setCollectionMembership(Set(photos.prefix(4).map(\.id)), collectionID: selects, included: true)
+    _ = try store.createCollection(title: "Stair series", projectID: project.id)
+    try store.setProjectCover(photos[3].id, projectID: project.id)
+    var history = try store.edits(for: photos[0].id); var recipe = history.current
+    recipe.exposure = 0.35; recipe.contrast = 0.12; recipe.highlights = -0.28; recipe.shadows = 0.44; recipe.vibrance = 0.18
+    try history.set(recipe); try store.saveEdits(history)
+    var browsing = try store.browsingState(for: project.id)
+    browsing.selectedIDs = Set(photos.prefix(3).map(\.id)); browsing.activeID = photos[0].id; browsing.anchorID = photos[0].id
+    try store.saveBrowsingState(browsing, for: project.id)
+    for photo in photos.prefix(3) { _ = try store.add(photo, to: second.id) }
+    let presets = PresetStore(directory: locations.presets)
+    try presets.save(EditPreset(name: "Neutral base", adjustments: [.contrast: .number(0.04)]))
+    try presets.save(EditPreset(name: "Deep black", adjustments: [.blacks: .number(-0.4), .contrast: .number(0.25)]))
+  }
+
   func testCreateOptionalManualVerificationFixtures() throws {
     guard let path = ProcessInfo.processInfo.environment["NTO_QA_FIXTURES"] else { throw XCTSkip("Opt-in manual image fixture generator") }
     let root = URL(fileURLWithPath: path)

@@ -27,11 +27,13 @@ Implemented and locally verified on 14 September 2026. With this phase the local
 | Failures and cancellation | A photograph whose original has vanished is reported per file with the recovery message; Stop ends a 20-file export early with an explicit summary |
 | Unsigned Xcode Debug build | Passed |
 
-Exported files were verified by decoding them with ImageIO, which is what Preview, Finder and Quick Look use. A check in a non-Apple application and a print-service upload remain manual steps.
+Exported files were verified by decoding them with ImageIO, which is what Preview, Finder and Quick Look use, and on 15 September 2026 with a non-Apple toolchain: Pillow 12 (libjpeg, libtiff) via `scripts/qa-export-check.py` on samples from the opt-in `testCreateOptionalExportSamples`. Every file decoded fully; dimensions matched (32×64 upright JPEGs, a 20×40 TIFF); the camera policy carried Make and dropped GPS unless requested; the None policy carried no EXIF and no XMP; captions and keywords were present in the XMP packet of the other policies.
+
+Two findings from the external decode, both recorded here rather than changed: the JPEGs carry no embedded ICC profile and are instead tagged sRGB through the Exif ColorSpace field (value 1), which ImageIO reports as an sRGB profile name; the TIFF does embed sRGB. And the TIFF is written as RGBA with an opaque alpha channel. Both are acceptable for the JPEG proof; an explicitly embedded JPEG profile and an alpha-free TIFF are candidates for the full-GDD export options. A print-service upload remains a manual step.
 
 ## Native UI verification
 
-Not performed, for the reasons recorded in Phases 05 and 06. Open items: the sheet at the minimum window size, persisted settings across launches, folder choice on an external drive, Stop during a long RAW export, and opening the results in Finder and a non-Apple viewer.
+Not performed for the sheet itself. Open items: the sheet at the minimum window size, persisted settings across launches, folder choice on an external drive, and Stop during a long RAW export. Opening the results outside NTO is covered by the external decode above.
 
 ## Limits
 

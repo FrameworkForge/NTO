@@ -155,7 +155,7 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 - [x] Make Escape cancel a crop interaction and Enter commit it; keep geometry editable later.
 - [x] Connect every committed edit to undo/redo and recipe autosave.
 - [x] Add hold-to-view-original comparison using cached previews; restore the edited view on release without changing its recipe.
-- [ ] Verify Focus Mode, resizing, keyboard access, and photograph-first layout throughout editing.
+- [ ] Verify Focus Mode, resizing, keyboard access, and photograph-first layout throughout editing. *Layout verified live in every mode on a synthetic library on 15 September 2026; Focus Mode and keyboard interaction still need a hands-on pass.*
 
 **Verification so far:** [Phase 05 verification](PHASE-05-VERIFICATION.md).
 
@@ -193,7 +193,7 @@ Each phase below contains build tasks and an exit gate. Leave tasks unchecked un
 - [x] Support JPEG/TIFF, quality, target dimensions, colour profile, metadata policy, and filename templates. *sRGB is the only profile.*
 - [x] Render at source resolution unless resizing is requested.
 - [x] Define explicit existing-file conflict behavior; show progress and actionable per-item failures.
-- [ ] Verify results in applications outside NTO and compare them with the editing preview. *Automated: exported pixels equal the engine output and decode with ImageIO; a manual check in a non-Apple viewer remains.*
+- [x] Verify results in applications outside NTO and compare them with the editing preview. *Exported pixels equal the engine output; files decode with ImageIO and with Pillow's libjpeg/libtiff, with dimensions and metadata policy confirmed (Phase 07 record).*
 
 **Exit gate:** exported files open correctly and match requested dimensions, naming, profile, and metadata policy. Studio remains responsive, and originals remain unchanged.
 

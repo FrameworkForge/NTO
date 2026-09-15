@@ -24,7 +24,7 @@ Status is **local verification on Apple silicon**. GitHub Actions runs on push: 
 | Export | Shift-Cmd-E or the header button exports the selection: JPEG with quality or TIFF, original size or fit longest edge, filename templates with a live example, metadata policy (none, caption and keywords, camera data) with location opt-in, skip/keep both/replace, background queue with progress, Stop, per-file failures and Show in Finder; settings persist | [Phase 07](PHASE-07-VERIFICATION.md) |
 | Verified files | Generated JPEG/HEIC/TIFF fixtures in tests; one owner Canon EOS 5D Mark IV CR2 developed at neutral settings | Phase 02, Phase 04 |
 
-Automated coverage: 49 Swift tests (47 behavioural, 2 opt-in fixture generators), unsigned Debug build via `xcodebuild`.
+Automated coverage: 51 Swift tests (47 behavioural, 4 opt-in generators for fixtures, a stress library, a demo library and export samples), unsigned Debug build via `xcodebuild`.
 
 ### Shared contracts and tokens
 
@@ -56,7 +56,7 @@ Automated coverage: 49 Swift tests (47 behavioural, 2 opt-in fixture generators)
 - [ ] Complete a real shoot's cull end to end with persistent ratings, picks, rejects, favourites and focus inspection.
 - [ ] Edit RAW/JPEG with the full v0.1 tool set without changing originals. Every Phase 05 tool is implemented; live verification on real photographs remains.
 - [x] Presets and parameter-selective batch edits (Phase 06); live UI verification still open.
-- [x] JPEG export that opens correctly outside NTO (Phase 07; verified by ImageIO decoding, a non-Apple viewer check remains).
+- [x] JPEG export that opens correctly outside NTO (Phase 07; verified by ImageIO and by Pillow's libjpeg/libtiff decoders).
 - [ ] Recovery from unavailable originals, interrupted operations and render/export failures across the whole workflow.
 - [ ] Clean-checkout clone, build, open, edit, export by another developer following the documented prerequisites.
 
@@ -69,7 +69,8 @@ Automated coverage: 49 Swift tests (47 behavioural, 2 opt-in fixture generators)
 - [x] Interactive crop tool with aspect presets, thirds guides, Return to commit and Escape to cancel.
 - [x] 100% inspection of the edited result inside Edit.
 - [ ] Brilliance (deferred by the v0.1 reconciliation); a straighten guide on the image.
-- [ ] Live UI verification of the tools, Focus Mode and window sizes with real photographs; the RAW eyedropper on a real camera file; manual pointer-drag acceptance open since Phase 04; the native workspace layout ([STUDIO-NATIVE-UI.md](STUDIO-NATIVE-UI.md)) against real photographs.
+- [x] Native workspace layout captured live in every mode against a synthetic library ([STUDIO-NATIVE-UI.md](STUDIO-NATIVE-UI.md)); a launch crash and a truncation were found and fixed.
+- [ ] Keyboard and Focus Mode interaction, real photographs, the RAW eyedropper on a real camera file, and manual pointer-drag acceptance open since Phase 04.
 
 ### Phase 06: presets and batch (implemented)
 
@@ -81,7 +82,7 @@ Automated coverage: 49 Swift tests (47 behavioural, 2 opt-in fixture generators)
 
 - [x] Export sheet: folder, JPEG quality or TIFF, original size or fit, filename template, metadata policy with location opt-in, conflict behaviour; per-file failures in the status report.
 - [x] Background export queue for the selection with progress and Stop; exported pixels verified equal to the engine output and decodable by ImageIO.
-- [ ] Manual check of exported files in a non-Apple application and live UI verification of the sheet and status bar.
+- [x] Exported files decoded with a non-Apple toolchain (Pillow); live UI verification of the sheet and status bar remains.
 - Colour-profile choices, 16-bit TIFF, export presets and watermarks are full-GDD scope after the JPEG proof.
 
 ### Qualification and verification gaps

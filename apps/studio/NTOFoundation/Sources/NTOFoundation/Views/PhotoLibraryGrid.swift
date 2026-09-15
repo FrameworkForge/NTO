@@ -55,6 +55,10 @@ public struct PhotoLibraryGrid: View {
           library.selectAll(); return .handled
         }
       }
+      if !isFocused {
+        Divider()
+        LibraryFooter(library: library)
+      }
     }
   }
   private func tile(_ photo: PhotoRecord) -> some View {

@@ -38,6 +38,7 @@ public struct EditWorkspace: View {
         }
       }.padding(14)
     }
+    .overlay { if editor.isStraightening { StraightenGuide().padding(isFocused ? 0 : 32).allowsHitTesting(false) } }
     .overlay(alignment: .bottom) { if editor.history != nil { toolBar.padding(.bottom, 16) } }
     // Escape, Return, Space and backslash route through the window monitor, bypassing text fields and sheets like Cull.
     .background(CullKeyboardShortcuts { event in

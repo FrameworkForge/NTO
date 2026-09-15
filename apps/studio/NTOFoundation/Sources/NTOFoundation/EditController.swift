@@ -29,6 +29,8 @@ import UniformTypeIdentifiers
   public private(set) var isRenderingFull = false
   /// White-balance eyedropper armed: the next click on the photograph samples a neutral.
   public var isSamplingWhiteBalance = false
+  /// True while the rotation slider is being dragged; the canvas shows a level grid.
+  public var isStraightening = false
   public private(set) var sampleError: String?
   private var adjustmentPreviewTask: Task<Void, Never>?
   private var fullTask: Task<Void, Never>?
@@ -45,7 +47,7 @@ import UniformTypeIdentifiers
   public func activate(_ photo: PhotoRecord?) { isActive = true; open(photo); requestPreview() }
   public func deactivate() {
     finishGesture(); cancelPreview(); clearAdjustmentPreview(); setInspecting(false)
-    cropSession = nil; isSamplingWhiteBalance = false; isComparing = false; isActive = false
+    cropSession = nil; isSamplingWhiteBalance = false; isStraightening = false; isComparing = false; isActive = false
   }
   public func open(_ photo: PhotoRecord?) {
     if self.photo?.id == photo?.id, self.photo?.locationRevision == photo?.locationRevision, history != nil { return }

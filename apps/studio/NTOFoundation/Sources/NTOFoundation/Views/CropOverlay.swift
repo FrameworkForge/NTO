@@ -73,3 +73,23 @@ struct EditPixelInspection: View {
     }
   }
 }
+
+/// A level grid shown while the rotation slider is dragged, so horizons and verticals can be straightened by eye.
+struct StraightenGuide: View {
+  var body: some View {
+    Canvas { context, size in
+      var path = Path()
+      for step in 1..<10 {
+        let x = size.width * CGFloat(step) / 10, y = size.height * CGFloat(step) / 10
+        path.move(to: CGPoint(x: x, y: 0)); path.addLine(to: CGPoint(x: x, y: size.height))
+        path.move(to: CGPoint(x: 0, y: y)); path.addLine(to: CGPoint(x: size.width, y: y))
+      }
+      context.stroke(path, with: .color(.white.opacity(0.35)), lineWidth: 0.5)
+      var centre = Path()
+      centre.move(to: CGPoint(x: 0, y: size.height / 2)); centre.addLine(to: CGPoint(x: size.width, y: size.height / 2))
+      centre.move(to: CGPoint(x: size.width / 2, y: 0)); centre.addLine(to: CGPoint(x: size.width / 2, y: size.height))
+      context.stroke(centre, with: .color(.white.opacity(0.8)), lineWidth: 1)
+    }
+    .accessibilityHidden(true)
+  }
+}

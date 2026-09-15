@@ -31,7 +31,7 @@ This is an implementation priority, not a calendar estimate. Bug fixes can inter
 - [ ] Edit supported RAW/JPEG photographs with the full v0.1 tool set without changing originals. Every tool is implemented (Light, Colour with eyedropper, Detail, interactive crop, rotation, 100% inspection); this stays open until verified on real RAW and JPEG photographs.
 - [x] Close and reopen with the same photographic edit state (current Phase 04 controls).
 - [x] Apply/revert presets and parameter-selective batch edits (Phase 06; live UI check still open).
-- [x] Export correct JPEG files that open outside NTO (Phase 07; verified by ImageIO decoding with dimensions, profile and metadata checks; a non-Apple viewer check remains).
+- [x] Export correct JPEG files that open outside NTO (Phase 07; verified by ImageIO and by Pillow's libjpeg/libtiff decoders with dimensions and metadata checks).
 - [ ] Recover from unavailable originals, interrupted operations, and rendering/export failures without losing work.
 - [ ] Another developer can clone, build, open a photograph, edit, and export using documented prerequisites.
 

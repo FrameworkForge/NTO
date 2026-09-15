@@ -100,18 +100,23 @@ public struct EditInspector: View {
         Spacer().frame(width: 90)
         Button("Use As Shot") { editor.setTemperature(nil) }.controlSize(.small)
           .help("Return to the camera's white balance for RAW, or the file's existing appearance for other images")
-        Button("Eyedropper") { editor.isSamplingWhiteBalance = true }.controlSize(.small)
+        Button { editor.isSamplingWhiteBalance = true } label: { Image(systemName: "eyedropper") }.controlSize(.small)
+          .accessibilityLabel("White balance eyedropper").help("Click a neutral area of the photograph to set temperature and tint")
         Spacer()
       }
     } else {
       HStack(spacing: 8) {
         Text("Temperature").font(.callout).frame(width: 90, alignment: .leading)
-        Text("As Shot").foregroundStyle(.secondary)
+        Text("As Shot").foregroundStyle(.secondary).lineLimit(1)
         Spacer()
+      }
+      HStack {
+        Spacer().frame(width: 90)
         Button("Adjust") { editor.setTemperature(6500) }.controlSize(.small)
           .help("Set an explicit Kelvin value. 6500 K leaves a non-RAW image unchanged.")
-        Button("Eyedropper") { editor.isSamplingWhiteBalance = true }.controlSize(.small)
-          .help("Click a neutral area of the photograph to set temperature and tint")
+        Button { editor.isSamplingWhiteBalance = true } label: { Image(systemName: "eyedropper") }.controlSize(.small)
+          .accessibilityLabel("White balance eyedropper").help("Click a neutral area of the photograph to set temperature and tint")
+        Spacer()
       }
     }
   }
@@ -120,7 +125,7 @@ public struct EditInspector: View {
     HStack(spacing: 8) {
       Text("Rotation").font(.callout).frame(width: 90, alignment: .leading)
       Slider(value: Binding(get: { editor.history?.current.rotation ?? recipe.rotation }, set: { editor.setRotation($0) }),
-        in: -180...180, onEditingChanged: gesture).accessibilityLabel("Rotation")
+        in: -180...180, onEditingChanged: { active in editor.isStraightening = active; gesture(active) }).accessibilityLabel("Rotation")
       numericField("Rotation", value: recipe.rotation, range: -180...180, step: 0.1, unit: "degrees") { editor.setRotation($0) }
     }
     HStack {

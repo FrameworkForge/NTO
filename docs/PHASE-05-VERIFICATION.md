@@ -10,7 +10,7 @@ Three increments implemented and locally verified on 14 September 2026. The firs
 
 Checks for this increment: native suite 48 tests (46 passed, 2 skipped). Geometry: fitted rectangle, handle hit-testing, free and aspect-locked resizing that keeps the pixel ratio, move and edge clamping, largest-fit for a preset, and mapping displayed points back through crop and 0°/90°/37° rotation. Session: previews uncropped and unrotated, recipe untouched until commit, cancel restores, commit is one clamped undo step, unchanged commit adds nothing. Eyedropper: three casts solved to chroma below 3% through the renderer's stage, a neutral sample stays near 6500 K; on a warm test image the sampled area renders within 6/255 of neutral while a genuinely red patch stays red, as one undo step. Inspection: full image dimensions follow crop and rotation changes; leaving frees the image; starting a crop leaves inspection.
 
-Not verified: the RAW eyedropper path on a real camera file (no RAW fixture; the decoder's location convention needs a check on the owner's CR2), pointer dragging of the overlay, and the tool badges at the minimum window size.
+Not verified: the RAW eyedropper path on a real camera file (no RAW fixture; the decoder's location convention needs a check on the owner's CR2), pointer dragging of the overlay, and the tool badges at the minimum window size. The Edit inspector and canvas were captured live against the synthetic library on 15 September 2026 (see [STUDIO-NATIVE-UI.md](STUDIO-NATIVE-UI.md)).
 
 ## Second increment: tonal range and vibrance
 
@@ -61,7 +61,7 @@ Not performed for this increment. The development machine had no Xcode selected 
 
 - **Light**: Brilliance (deferred by the v0.1 reconciliation; would be another additive field).
 - **Detail**: refinement after expensive interactions (interactive previews render at 2,000 px; 100% inspection re-renders the full image on every change, which is slow on large RAW files).
-- **Geometry**: a straighten interaction with an angle guide on the image (rotation is a slider with numeric entry).
+- **Geometry**: a draggable straighten interaction on the image (rotation is a slider with numeric entry; a level grid now overlays the canvas while the slider is dragged, added 15 September 2026).
 - Keyboard, resize and Focus Mode verification with real photographs, and the RAW eyedropper on a real camera file.
 
 The Light and Colour field set is settled for v0.1, and Phase 06 presets and Phase 07 export are built against it.

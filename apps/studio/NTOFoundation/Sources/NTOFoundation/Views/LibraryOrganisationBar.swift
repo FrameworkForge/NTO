@@ -1,6 +1,8 @@
 import SwiftUI
 
 /// The Library's single row of pop-ups: what to show, how to sort, search and further filters, an organise menu, count and size.
+/// The row is hosted at its ideal width in a horizontal scroll view: compressing AppKit-backed pop-ups during the split view's
+/// first layout triggers an AppKit constraint loop ("more Update Constraints passes than views"), so they are never squeezed.
 struct LibraryToolbarRow: View {
   @Bindable var library: LibraryController
   private func binding<T>(_ path: WritableKeyPath<LibraryQuery, T>) -> Binding<T> {
@@ -9,56 +11,70 @@ struct LibraryToolbarRow: View {
     })
   }
   var body: some View {
-    HStack(spacing: 12) {
-      Picker("Show", selection: Binding(get: { LibraryShowFilter.current(in: library.query) },
-        set: { library.setQuery($0.applied(to: library.query)) })) {
-        ForEach(LibraryShowFilter.allCases) { Text($0.title).tag($0) }
-      }.fixedSize()
-      Picker("Sort by", selection: binding(\.sort)) {
-        ForEach(LibrarySort.allCases, id: \.self) { Text($0.title).tag($0) }
-      }.fixedSize()
-      TextField("Search", text: binding(\.text)).textFieldStyle(.roundedBorder).frame(width: 160)
-        .accessibilityLabel("Search filenames, captions, keywords and camera metadata")
-      Menu("Filters") {
-        Picker("Camera", selection: binding(\.camera)) {
-          Text("Any camera").tag("")
-          ForEach(Array(Set(library.photos.compactMap(\.camera))).sorted(), id: \.self) { Text($0).tag($0) }
-        }
-        Picker("Media type", selection: binding(\.mediaType)) {
-          Text("Any type").tag("")
-          ForEach(Array(Set(library.photos.map(\.mediaType))).sorted(), id: \.self) { Text($0).tag($0) }
-        }
-        Picker("Minimum rating", selection: binding(\.minimumRating)) {
-          Text("Any rating").tag(0)
-          ForEach(1...5, id: \.self) { Text("\($0)+ stars").tag($0) }
-        }
-        Divider()
-        Button("Clear filters") {
-          var query = LibraryQuery(); query.sort = library.query.sort; query.collectionID = library.query.collectionID
-          library.setQuery(query)
-        }
-      }.fixedSize()
-      Menu("Organise") {
-        Button(library.activePhoto?.isFavourite == true ? "Remove favourite" : "Favourite") {
-          library.annotate(favourite: !(library.activePhoto?.isFavourite ?? false))
-        }.disabled(library.actionableIDs.isEmpty)
-        Menu("Add selected to collection") {
-          ForEach(library.collections) { collection in
-            Button(collection.title) { library.collect(in: collection.id, included: true) }
+    ScrollView(.horizontal, showsIndicators: false) {
+      HStack(spacing: 12) {
+        Picker("Show", selection: Binding(get: { LibraryShowFilter.current(in: library.query) },
+          set: { library.setQuery($0.applied(to: library.query)) })) {
+          ForEach(LibraryShowFilter.allCases) { Text($0.title).tag($0) }
+        }.frame(width: 170)
+        Picker("Sort by", selection: binding(\.sort)) {
+          ForEach(LibrarySort.allCases, id: \.self) { Text($0.title).tag($0) }
+        }.frame(width: 150)
+        TextField("Search", text: binding(\.text)).textFieldStyle(.roundedBorder).frame(width: 130)
+          .accessibilityLabel("Search filenames, captions, keywords and camera metadata")
+        Menu("Filters") {
+          Picker("Camera", selection: binding(\.camera)) {
+            Text("Any camera").tag("")
+            ForEach(Array(Set(library.photos.compactMap(\.camera))).sorted(), id: \.self) { Text($0).tag($0) }
           }
-        }.disabled(library.actionableIDs.isEmpty || library.collections.isEmpty)
-        if let current = library.collections.first(where: { $0.id == library.query.collectionID }) {
-          Button("Remove selected from “\(current.title)”") { library.collect(in: current.id, included: false) }
-            .disabled(library.actionableIDs.isEmpty)
-        }
-      }.fixedSize()
-      Spacer()
+          Picker("Media type", selection: binding(\.mediaType)) {
+            Text("Any type").tag("")
+            ForEach(Array(Set(library.photos.map(\.mediaType))).sorted(), id: \.self) { Text($0).tag($0) }
+          }
+          Picker("Minimum rating", selection: binding(\.minimumRating)) {
+            Text("Any rating").tag(0)
+            ForEach(1...5, id: \.self) { Text("\($0)+ stars").tag($0) }
+          }
+          Divider()
+          Button("Clear filters") {
+            var query = LibraryQuery(); query.sort = library.query.sort; query.collectionID = library.query.collectionID
+            library.setQuery(query)
+          }
+        }.frame(width: 80)
+        Menu("Organise") {
+          Button(library.activePhoto?.isFavourite == true ? "Remove favourite" : "Favourite") {
+            library.annotate(favourite: !(library.activePhoto?.isFavourite ?? false))
+          }.disabled(library.actionableIDs.isEmpty)
+          Menu("Add selected to collection") {
+            ForEach(library.collections) { collection in
+              Button(collection.title) { library.collect(in: collection.id, included: true) }
+            }
+          }.disabled(library.actionableIDs.isEmpty || library.collections.isEmpty)
+          if let current = library.collections.first(where: { $0.id == library.query.collectionID }) {
+            Button("Remove selected from “\(current.title)”") { library.collect(in: current.id, included: false) }
+              .disabled(library.actionableIDs.isEmpty)
+          }
+        }.frame(width: 90)
+      }
+      .padding(.horizontal, 16)
+    }
+    .frame(height: 40)
+  }
+}
+
+/// Count and thumbnail size under the grid, where they always fit.
+struct LibraryFooter: View {
+  @Bindable var library: LibraryController
+  var body: some View {
+    HStack {
       Text("\(library.visiblePhotos.count) of \(library.photos.count) · \(library.browsing.selectedIDs.count) selected")
         .font(.caption).foregroundStyle(.secondary).lineLimit(1)
+      Spacer()
+      Image(systemName: "square.grid.3x3").font(.caption).foregroundStyle(.secondary).accessibilityHidden(true)
       Slider(value: Binding(get: { library.browsing.density }, set: { library.setDensity($0) }), in: 100...280)
         .frame(width: 100).accessibilityLabel("Thumbnail size")
     }
-    .padding(.horizontal, 16).frame(height: 40)
+    .padding(.horizontal, 16).frame(height: 30)
   }
 }
 

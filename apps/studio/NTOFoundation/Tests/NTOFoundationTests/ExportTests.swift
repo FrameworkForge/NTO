@@ -164,6 +164,37 @@ final class ExportTests: XCTestCase {
     XCTAssertEqual(try store.edits(for: record.id).current.exposure, 1, "Saved edits are untouched")
   }
 
+  /// Opt-in: writes sample exports for verification with non-Apple decoders (see scripts/qa-export-check.py).
+  @MainActor func testCreateOptionalExportSamples() async throws {
+    guard let path = ProcessInfo.processInfo.environment["NTO_QA_EXPORT_DIR"] else { throw XCTSkip("Opt-in export sample generator") }
+    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let original = try cameraJPEG(in: root)
+    let store = try ProjectStore(container: ProjectStore.container(inMemory: true))
+    let project = try store.create(title: "QA export")
+    let record = PhotoRecord(id: UUID(), fingerprint: try PhotoImportWorker.fingerprint(original), filename: "IMG_0001.jpg",
+      mediaType: "public.jpeg", width: 32, height: 64, byteCount: 1, bookmark: try PhotoImportWorker.bookmark(original))
+    try store.add(record, to: project.id)
+    try store.annotate([record.id], caption: "Morning light", keywords: ["street", "portrait"])
+    var history = try store.edits(for: record.id); var recipe = history.current; recipe.exposure = 1
+    try history.set(recipe); try store.saveEdits(history)
+    let photos = try store.photos(in: project.id)
+    let exporter = ExportController(store: store, locations: LibraryLocations(root: root))
+    let destination = URL(fileURLWithPath: path)
+    let cases: [(String, (inout ExportSpecification) -> Void)] = [
+      ("camera-q90", { $0.metadata = .camera; $0.quality = 0.9 }),
+      ("camera-gps", { $0.metadata = .camera; $0.includeLocation = true }),
+      ("descriptive-fit40-tiff", { $0.metadata = .descriptive; $0.format = .tiff; $0.sizing = .fit(maxDimension: 40) }),
+      ("none-q50", { $0.metadata = .none; $0.quality = 0.5 }),
+    ]
+    for (name, configure) in cases {
+      var spec = ExportSpecification(); spec.filenameTemplate = name; spec.conflicts = .replace
+      configure(&spec)
+      exporter.start(spec, photos: photos, projectTitle: "QA export", destination: destination)
+      await exporter.waitForCompletion()
+      XCTAssertEqual(exporter.exportedCount, 1, outcomes(exporter))
+    }
+  }
+
   @MainActor func testExportReportsMissingOriginalsAndStopsOnCancel() async throws {
     let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
     let store = try ProjectStore(container: ProjectStore.container(inMemory: true))

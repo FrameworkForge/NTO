@@ -3,11 +3,15 @@ import NTOFoundation
 import SwiftUI
 
 @main struct NTOStudioApp: App {
-  @State private var workspace = WorkspaceState()
+  @State private var workspace: WorkspaceState
   private let store: ProjectStore?
   private let library: LibraryController?
   private let startupError: String?
   init() {
+    // QA affordance: NTO_STUDIO_MODE=Library|Cull|Edit|Publish opens in that mode (used with NTO_STUDIO_LIBRARY_PATH).
+    let initial = WorkspaceState()
+    if let mode = ProcessInfo.processInfo.environment["NTO_STUDIO_MODE"].flatMap(StudioMode.init(rawValue:)) { initial.mode = mode }
+    _workspace = State(initialValue: initial)
     do {
       let override = ProcessInfo.processInfo.environment["NTO_STUDIO_LIBRARY_PATH"]
       let locations = try override.map { LibraryLocations(root: URL(fileURLWithPath: $0, isDirectory: true)) } ?? LibraryLocations.standard()

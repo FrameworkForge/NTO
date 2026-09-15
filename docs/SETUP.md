@@ -61,6 +61,25 @@ Studio's default library is `~/Library/Application Support/NTO/Studio/Library.st
 
 For an isolated development launch, set `NTO_STUDIO_LIBRARY_PATH` to a separate directory when launching the app executable. Close the ordinary Studio instance first. This override is for testing only; a normal launch reopens the default library.
 
+## Live UI checks without personal photographs
+
+Three opt-in helpers support looking at the real app against synthetic data:
+
+```sh
+NTO_QA_DEMO_LIBRARY=/private/tmp/nto-demo ./scripts/pnpm test:studio --filter PhotoLibraryTests/testCreateOptionalDemoLibrary
+NTO_STUDIO_LIBRARY_PATH=/private/tmp/nto-demo NTO_STUDIO_MODE=Edit <build>/NTOStudio.app/Contents/MacOS/NTOStudio
+swiftc -O -o /tmp/qa-windowid scripts/qa-windowid.swift && screencapture -x -l "$(/tmp/qa-windowid | head -1 | cut -d' ' -f1)" studio.png
+```
+
+The first builds an isolated library with two projects, eleven imported synthetic images (JPEG, HEIC, an orientation-6 TIFF), ratings, flags, favourites, keywords, two collections, a cover, a saved edit, a selection and two presets. `NTO_STUDIO_MODE` (`Library`, `Cull`, `Edit`, `Publish`) opens the app in that mode. The window helper prints the app's window number so `screencapture -l` captures only that window, which needs Screen Recording permission for the terminal.
+
+For export verification with a non-Apple toolchain:
+
+```sh
+NTO_QA_EXPORT_DIR=/private/tmp/nto-exports ./scripts/pnpm test:studio --filter ExportTests/testCreateOptionalExportSamples
+python3 scripts/qa-export-check.py /private/tmp/nto-exports   # Pillow: libjpeg, libtiff
+```
+
 The Swift test suite generates JPEG/HEIC/TIFF fixtures in temporary directories. Optional manual helpers are explicitly skipped unless enabled:
 
 ```sh

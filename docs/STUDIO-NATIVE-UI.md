@@ -24,6 +24,13 @@ Implemented 14 September 2026 from the Claude Design mockup **NTO Studio — Nat
 - **Fixture toggle kept** in the sidebar footer so layouts can be inspected without personal photographs.
 - **Glass bars** use `glassEffect` (macOS 26). The deployment target is already macOS 26.
 
-## Not verified live
+## Live verification (15 September 2026)
 
-The change is layout and composition; the controllers and their tests are untouched (48 tests pass, plus one for the Show filter mapping). The Studio build succeeds, but the app was not launched against real photographs in this session: sidebar badge refresh after imports, glass bar contrast over bright photographs, inspector width at the minimum window, and the Publish cover grid with a large selection need a live check, recorded in [STATUS.md](STATUS.md).
+The app was launched against the synthetic demo library (see the live UI checks in [SETUP.md](SETUP.md)) in every mode and captured by window. Observed: sidebar with cover thumbnails and count badges, collections with counts; Library row, square tiles with flag dots, stars and hearts, selection strokes, the count and size footer; Cull's floating bar, position label and filmstrip; Edit's floating bar and the full inspector with saved values; the Publish draft form with the cover grid and disabled actions; the Info inspector's grouped form with the caption editor and original status.
+
+Two defects were found and fixed:
+
+- **Launch crash in Library.** The pop-up row overflowed the content column during the split view's first layout, and compressing the AppKit-backed pop-ups produced an AppKit constraint loop ("more Update Constraints in Window passes than there are views"), an uncaught exception. The row is now hosted in a horizontal scroll view at its ideal width and the count and size slider moved to a footer under the grid; five consecutive launches are clean. Lesson recorded in CLAUDE.md: never let SwiftUI compress AppKit-backed pop-ups.
+- **Truncated buttons** in the Colour section's white-balance row at the inspector's width; the eyedropper became an icon button.
+
+Still open: keyboard and Focus Mode interaction, sidebar badge refresh after a live import, glass bar contrast over bright real photographs, and the minimum window size, all of which need pointer and keyboard input this session could not send.
